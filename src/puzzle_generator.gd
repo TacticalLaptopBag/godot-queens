@@ -166,7 +166,7 @@ func _generate_regions(size: int, crowns: Array[Vector2i]) -> Array:
 		var pos: Vector2i = item.pos
 		var reg_id: int = item.reg_id
 		
-		var neighbors := [
+		var neighbors: Array[Vector2i] = [
 			Vector2i(pos.x + 1, pos.y),
 			Vector2i(pos.x - 1, pos.y),
 			Vector2i(pos.x, pos.y + 1),
