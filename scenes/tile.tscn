@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://dlsp8b6t0fqev"]
+
+[ext_resource type="Texture2D" uid="uid://bui148qrl5bd1" path="res://img/crown/square-outline.png" id="1_j8k5k"]
+[ext_resource type="Script" uid="uid://dkuqrw0fppnps" path="res://src/tile.gd" id="2_6p3j2"]
+[ext_resource type="Script" uid="uid://c26mk37sdphu6" path="res://src/haptic_config.gd" id="3_284l3"]
+[ext_resource type="Texture2D" uid="uid://bhv6rdjyejrjp" path="res://img/crown/square-filled.png" id="4_w8vld"]
+[ext_resource type="Texture2D" uid="uid://bvjm1siy2l8gy" path="res://img/crown/close.svg" id="5_jm5cm"]
+[ext_resource type="Texture2D" uid="uid://x20sbp2qtoqp" path="res://img/crown/crown.svg" id="6_vknvr"]
+[ext_resource type="Texture2D" uid="uid://blmggj33yb62s" path="res://img/crown/warning.svg" id="7_jdkp0"]
+
+[sub_resource type="Resource" id="Resource_j3iir"]
+script = ExtResource("3_284l3")
+haptic_devices = 3
+duration_ms = 10
+amplitude = 0.2
+gamepad_duration_sec = 0.1
+strong_magnitude = 0.0
+metadata/_custom_type_script = "uid://c26mk37sdphu6"
+
+[sub_resource type="Resource" id="Resource_j8k5k"]
+script = ExtResource("3_284l3")
+haptic_devices = 2
+duration_ms = 15
+amplitude = 0.4
+metadata/_custom_type_script = "uid://c26mk37sdphu6"
+
+[sub_resource type="Resource" id="Resource_w8vld"]
+script = ExtResource("3_284l3")
+haptic_devices = 3
+duration_ms = 100
+amplitude = 0.3
+gamepad_duration_sec = 0.25
+weak_magnitude = 0.0
+strong_magnitude = 1.0
+metadata/_custom_type_script = "uid://c26mk37sdphu6"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gtpg2"]
+size = Vector2(60, 60)
+
+[node name="Tile" type="Sprite2D" unique_id=1042738421]
+self_modulate = Color(0, 0, 0, 1)
+texture = ExtResource("1_j8k5k")
+script = ExtResource("2_6p3j2")
+tap_haptics = SubResource("Resource_j3iir")
+long_press_haptics = SubResource("Resource_j8k5k")
+invalid_haptics = SubResource("Resource_w8vld")
+
+[node name="Fill" type="Sprite2D" parent="." unique_id=574931525]
+texture = ExtResource("4_w8vld")
+
+[node name="Mark" type="Sprite2D" parent="." unique_id=1535633344]
+modulate = Color(0, 0, 0, 1)
+texture = ExtResource("5_jm5cm")
+
+[node name="Crown" type="Sprite2D" parent="." unique_id=1536696781]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(1, 1)
+texture = ExtResource("6_vknvr")
+flip_h = true
+
+[node name="Invalid" type="Sprite2D" parent="." unique_id=377537915]
+modulate = Color(1, 0.32941177, 0.28627452, 1)
+scale = Vector2(1.25, 1.25)
+texture = ExtResource("7_jdkp0")
+
+[node name="ClickDetector" type="Area2D" parent="." unique_id=1523545792]
+z_index = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickDetector" unique_id=907866706]
+shape = SubResource("RectangleShape2D_gtpg2")
+
+[node name="LongPressTimer" type="Timer" parent="." unique_id=421255309]
+wait_time = 0.2
+one_shot = true
+
+[node name="InvalidTimer" type="Timer" parent="." unique_id=1967438548]
+wait_time = 0.333
+one_shot = true
+
+[node name="SelectionIndicator" type="Sprite2D" parent="." unique_id=2033087331]
+visible = false
+modulate = Color(0.54586667, 0.89, 0.53400004, 1)
+texture = ExtResource("1_j8k5k")
+
+[connection signal="input_event" from="ClickDetector" to="." method="_on_click_detector_input_event"]
+[connection signal="timeout" from="LongPressTimer" to="." method="_on_long_press_timer_timeout"]
+[connection signal="timeout" from="InvalidTimer" to="." method="_on_invalid_timer_timeout"]

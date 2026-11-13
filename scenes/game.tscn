@@ -1,0 +1,282 @@
+[gd_scene format=3 uid="uid://pc17b160dokd"]
+
+[ext_resource type="PackedScene" uid="uid://bs2ggo21bonk2" path="res://scenes/board.tscn" id="1_uwrxv"]
+[ext_resource type="Script" uid="uid://dndn3whlx6b48" path="res://src/new_game_button.gd" id="1_yqjtg"]
+[ext_resource type="Theme" uid="uid://bopxbva0ifjvt" path="res://theme.tres" id="2_0tnpc"]
+[ext_resource type="Theme" uid="uid://cvb3w225i6ntw" path="res://material3/dark/material-theme-dark.tres" id="2_ca42v"]
+[ext_resource type="Script" uid="uid://c7ycb12j8di3r" path="res://src/time_label.gd" id="2_gee14"]
+[ext_resource type="Texture2D" uid="uid://ca0qb51pxw072" path="res://img/menu_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="2_ir15t"]
+[ext_resource type="Texture2D" uid="uid://bx822jd5i3308" path="res://img/undo_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="2_iywne"]
+[ext_resource type="Script" uid="uid://6h3db65lygke" path="res://src/undo_button.gd" id="2_lnu2h"]
+[ext_resource type="Script" uid="uid://bib3k74oa0xq" path="res://src/ui_root.gd" id="3_rysoc"]
+[ext_resource type="Script" uid="uid://cwnl50yjsym1r" path="res://src/main_menu_button.gd" id="3_trtic"]
+[ext_resource type="Script" uid="uid://dyipj57gr314k" path="res://src/board_ui.gd" id="3_vtaks"]
+[ext_resource type="Texture2D" uid="uid://qp586uy1cn2r" path="res://img/add_2_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="4_p57ef"]
+[ext_resource type="PackedScene" uid="uid://j1b52jqppnm7" path="res://scenes/confetti_particles.tscn" id="6_p57ef"]
+[ext_resource type="PackedScene" uid="uid://lflfbqsybwg1" path="res://scenes/theme_switch_btn.tscn" id="6_ssvqc"]
+[ext_resource type="Script" uid="uid://d0lvaibgqjg03" path="res://src/selector.gd" id="10_264po"]
+[ext_resource type="PackedScene" uid="uid://cvo7wxon3in50" path="res://scenes/quit_button.tscn" id="10_kvuet"]
+[ext_resource type="PackedScene" uid="uid://dbismkobg3r5m" path="res://scenes/vibrate_toggle.tscn" id="10_trtic"]
+[ext_resource type="Script" uid="uid://cst7k2yr77w6t" path="res://src/ui_init.gd" id="11_1kice"]
+[ext_resource type="Texture2D" uid="uid://d1sc44drlq2db" path="res://img/crown_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="11_ca42v"]
+[ext_resource type="PackedScene" uid="uid://c06aql8tn7la" path="res://scenes/grid_options.tscn" id="11_trtic"]
+[ext_resource type="Script" uid="uid://bj8yi5w3ycoms" path="res://src/scoreboard.gd" id="16_pl11u"]
+[ext_resource type="PackedScene" uid="uid://baxxwm7mikvat" path="res://scenes/scoreboard_row.tscn" id="17_bhx41"]
+[ext_resource type="Script" uid="uid://be2h3iuojs1he" path="res://src/focus_on_visible.gd" id="18_5newe"]
+[ext_resource type="StyleBox" uid="uid://b4arnxwxqko2j" path="res://material3/dark/panel_accent_1.tres" id="19_sww3w"]
+
+[sub_resource type="GDScript" id="GDScript_u5sy4"]
+script/source = "extends HBoxContainer
+
+
+func _on_board_puzzle_completed(_start_ticks: int, _end_ticks: int) -> void:
+	visible = false
+
+
+func _on_board_puzzle_changed() -> void:
+	visible = true
+"
+
+[sub_resource type="InputEventAction" id="InputEventAction_264po"]
+action = &"undo"
+
+[sub_resource type="Shortcut" id="Shortcut_1kice"]
+events = [SubResource("InputEventAction_264po")]
+
+[sub_resource type="GDScript" id="GDScript_gee14"]
+script/source = "extends PanelContainer
+
+
+@export var time_label: Label
+
+@onready var time_label_fmt := time_label.text
+
+
+func _ready():
+	visible = false
+
+
+func _on_board_puzzle_completed(start_ticks: int, end_ticks: int) -> void:
+	visible = true
+	
+	var time_ms := end_ticks - start_ticks
+	var formatted_time := Util.format_ms(time_ms)
+	time_label.text = time_label_fmt % formatted_time
+
+
+func _on_board_puzzle_changed() -> void:
+	visible = false
+"
+
+[node name="Game" type="Node2D" unique_id=1986065374]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=838880534]
+
+[node name="Board" parent="." unique_id=1823476214 groups=["board"] instance=ExtResource("1_uwrxv")]
+padding = -8
+grid_padding = Vector2(0, 104)
+
+[node name="UICanvasLayer" type="CanvasLayer" parent="." unique_id=67938082]
+
+[node name="UI" type="Control" parent="UICanvasLayer" unique_id=1571416368]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_ca42v")
+script = ExtResource("3_rysoc")
+
+[node name="Menu Button" type="Button" parent="UICanvasLayer/UI" unique_id=644274769]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 28.0
+offset_right = 84.0
+offset_bottom = 84.0
+focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Undo")
+focus_neighbor_right = NodePath("../Theme Switch")
+focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
+icon = ExtResource("2_ir15t")
+script = ExtResource("3_trtic")
+
+[node name="Theme Switch" parent="UICanvasLayer/UI" unique_id=1268724542 instance=ExtResource("6_ssvqc")]
+layout_mode = 1
+focus_neighbor_left = NodePath("../Menu Button")
+focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Vibrate Toggle")
+focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
+
+[node name="BoardUI" type="Control" parent="UICanvasLayer/UI" unique_id=1313506943]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_0tnpc")
+script = ExtResource("3_vtaks")
+
+[node name="MarginContainer" type="MarginContainer" parent="UICanvasLayer/UI/BoardUI" unique_id=2008328514]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="TopRow" type="MarginContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=1857705121]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_top = 38
+
+[node name="Time" type="Label" parent="UICanvasLayer/UI/BoardUI/MarginContainer/TopRow" unique_id=1947271793]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0:00"
+horizontal_alignment = 1
+script = ExtResource("2_gee14")
+
+[node name="Selector" type="Control" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=287740884 node_paths=PackedStringArray("ui_up", "ui_left", "ui_right", "ui_down", "unfocus_on_win")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 2
+script = ExtResource("10_264po")
+ui_up = NodePath("../../../Menu Button")
+ui_left = NodePath("../BottomRow/Undo")
+ui_right = NodePath("../BottomRow/Vibrate Toggle")
+ui_down = NodePath("../BottomRow/Undo")
+unfocus_on_win = [NodePath("../../../Menu Button"), NodePath("../../../Theme Switch"), NodePath("../BottomRow/Undo"), NodePath("../BottomRow/Vibrate Toggle"), NodePath(".")]
+
+[node name="UI Init" type="Node" parent="UICanvasLayer/UI/BoardUI/MarginContainer/Selector" unique_id=1728327370]
+script = ExtResource("11_1kice")
+
+[node name="BottomRow" type="HBoxContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=1096244475]
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+theme_override_constants/separation = 24
+alignment = 1
+script = SubResource("GDScript_u5sy4")
+
+[node name="Undo" type="Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" unique_id=1460636056]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_neighbor_top = NodePath("../../Selector")
+focus_neighbor_right = NodePath("../Vibrate Toggle")
+focus_neighbor_bottom = NodePath("../../../../Menu Button")
+shortcut = SubResource("Shortcut_1kice")
+icon = ExtResource("2_iywne")
+script = ExtResource("2_lnu2h")
+
+[node name="Vibrate Toggle" parent="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" unique_id=1938221906 instance=ExtResource("10_trtic")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Undo")
+focus_neighbor_top = NodePath("../../Selector")
+focus_neighbor_bottom = NodePath("../../../../Theme Switch")
+
+[node name="DialogContainer" type="CenterContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=712856594]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="VictoryDialog" type="PanelContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer" unique_id=1360370872 node_paths=PackedStringArray("time_label")]
+layout_mode = 2
+script = SubResource("GDScript_gee14")
+time_label = NodePath("MarginContainer/VBoxContainer/Content")
+
+[node name="MarginContainer" type="MarginContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog" unique_id=1030433429]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer" unique_id=895123823]
+layout_mode = 2
+
+[node name="Crown" type="Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer" unique_id=861082073]
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+mouse_filter = 2
+button_mask = 0
+icon = ExtResource("11_ca42v")
+flat = true
+
+[node name="Content" type="Label" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer" unique_id=1008680778]
+layout_mode = 2
+text = "%s"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer" unique_id=1714248916]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 18
+
+[node name="Scoreboard" type="VBoxContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer" unique_id=1483746994]
+layout_mode = 2
+theme_override_constants/separation = 32
+script = ExtResource("16_pl11u")
+panel_scene = ExtResource("17_bhx41")
+
+[node name="ScoreRow" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer/Scoreboard" unique_id=1021280612 instance=ExtResource("17_bhx41")]
+layout_mode = 2
+
+[node name="ScoreRow2" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer/Scoreboard" unique_id=771261344 instance=ExtResource("17_bhx41")]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("19_sww3w")
+
+[node name="ScoreRow3" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer/Scoreboard" unique_id=545491402 instance=ExtResource("17_bhx41")]
+layout_mode = 2
+
+[node name="ScoreRow4" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer/Scoreboard" unique_id=2009305609 instance=ExtResource("17_bhx41")]
+layout_mode = 2
+
+[node name="ScoreRow5" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer/Scoreboard" unique_id=1387026261 instance=ExtResource("17_bhx41")]
+layout_mode = 2
+
+[node name="Action Buttons" type="HBoxContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer" unique_id=1891311119]
+layout_mode = 2
+alignment = 1
+
+[node name="New Game" type="Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/Action Buttons" unique_id=1202926301]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+icon = ExtResource("4_p57ef")
+script = ExtResource("1_yqjtg")
+
+[node name="Focus On Visible" type="Node" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/Action Buttons/New Game" unique_id=1846849195]
+script = ExtResource("18_5newe")
+
+[node name="Quit Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/Action Buttons" unique_id=1881093083 instance=ExtResource("10_kvuet")]
+layout_mode = 2
+
+[node name="Grid Options" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer" unique_id=1359782417 instance=ExtResource("11_trtic")]
+layout_mode = 2
+
+[node name="ConfettiParticles" parent="." unique_id=667145340 instance=ExtResource("6_p57ef")]
+position = Vector2(0, 360)
+scale = Vector2(10, 10)
+
+[connection signal="puzzle_changed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/TopRow/Time" method="start"]
+[connection signal="puzzle_changed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" method="_on_board_puzzle_changed"]
+[connection signal="puzzle_changed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog" method="_on_board_puzzle_changed"]
+[connection signal="puzzle_changed" from="Board" to="ConfettiParticles" method="stop"]
+[connection signal="puzzle_completed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" method="_on_board_puzzle_completed"]
+[connection signal="puzzle_completed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog" method="_on_board_puzzle_completed"]
+[connection signal="puzzle_completed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/MarginContainer/Scoreboard" method="_on_board_puzzle_completed"]
+[connection signal="puzzle_completed" from="Board" to="ConfettiParticles" method="_on_puzzle_completed"]
+[connection signal="puzzle_completed" from="Board" to="UICanvasLayer/UI/BoardUI/MarginContainer/TopRow/Time" method="stop" unbinds=2]
+
+[editable path="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow/Vibrate Toggle"]
