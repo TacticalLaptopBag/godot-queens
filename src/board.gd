@@ -73,7 +73,7 @@ func create_board():
 
 func _update_state():
 	var is_valid := puzzle.validate()
-	if is_valid and puzzle.is_filled():
+	if is_valid and puzzle.has_all_crowns_placed():
 		print("you're winner!")
 		for cell in puzzle.cells:
 			cell.locked = true

@@ -5,12 +5,7 @@ extends Resource
 @export var cells: Array[Cell] = []
 @export var solution_crowns: Array[Vector2i] = []
 var _size: int = -1
-
-
-enum LineType {
-	COLUMN,
-	ROW,
-}
+var auto_marks_enabled: bool = true
 
 
 func _init(size: int = 6):
@@ -46,50 +41,130 @@ func is_filled() -> bool:
 	return true
 
 
-func _find_invalid_lines(line_type: LineType) -> Array[Cell]:
-	var direction := Cell.Direction.SOUTH if line_type == LineType.COLUMN else Cell.Direction.EAST
-	var start_mask := Vector2i(1, 0) if line_type == LineType.COLUMN else Vector2i(0, 1)
+func has_all_crowns_placed() -> bool:
+	var crown_count := 0
+	for cell in cells:
+		if cell.type == Cell.Type.CROWN:
+			crown_count += 1
+	return crown_count == _size
+
+
+func update_auto_marks():
+	if not auto_marks_enabled:
+		return
 	
+	# Store manual marks
+	var manual_marks: Array[Vector2i] = []
+	for cell in cells:
+		if cell.type == Cell.Type.MARK:
+			manual_marks.append(cell.position)
+	
+	# Clear all AUTO_MARK to EMPTY
+	for cell in cells:
+		if cell.type == Cell.Type.AUTO_MARK:
+			cell.type = Cell.Type.EMPTY
+	
+	# Apply auto-marks for each crown
+	for cell in cells:
+		if cell.type == Cell.Type.CROWN:
+			# Mark same row
+			for x in range(_size):
+				var row_cell = get_cell(Vector2i(x, int(cell.position.y)))
+				if row_cell != cell and row_cell.type == Cell.Type.EMPTY:
+					row_cell.type = Cell.Type.AUTO_MARK
+			
+			# Mark same column
+			for y in range(_size):
+				var col_cell = get_cell(Vector2i(int(cell.position.x), y))
+				if col_cell != cell and col_cell.type == Cell.Type.EMPTY:
+					col_cell.type = Cell.Type.AUTO_MARK
+			
+			# Mark 8 neighbors
+			for direction in Cell.Direction.values():
+				var neighbor = cell.get_neighbor(direction)
+				if neighbor != null and neighbor != cell and neighbor.type == Cell.Type.EMPTY:
+					neighbor.type = Cell.Type.AUTO_MARK
+	
+	# Restore manual marks
+	for pos in manual_marks:
+		var cell = get_cell(pos)
+		if cell.type == Cell.Type.AUTO_MARK:
+			cell.type = Cell.Type.MARK
+
+
+func _find_crowns_per_row() -> Array[Cell]:
 	var problem_cells: Array[Cell] = []
-	for i in range(_size):
-		var current_cell = get_cell(i * start_mask)
-		var moon_count := 0
-		var sun_count := 0
-		var line_cells: Array[Cell] = []
-		while current_cell != null and current_cell.type != Cell.Type.EMPTY:
-			if current_cell.type == Cell.Type.MARK:
-				sun_count += 1
-			else:
-				moon_count += 1
-			line_cells.append(current_cell)
-			current_cell = current_cell.get_neighbor(direction)
-		
-		if line_cells.size() == _size && moon_count != sun_count:
-			problem_cells.append_array(line_cells)
-	
+	for y in range(_size):
+		var crowns_in_row: Array[Cell] = []
+		for x in range(_size):
+			var cell = get_cell(Vector2i(x, y))
+			if cell.type == Cell.Type.CROWN:
+				crowns_in_row.append(cell)
+		if crowns_in_row.size() > 1:
+			problem_cells.append_array(crowns_in_row)
 	return problem_cells
 
 
-func _find_illegal_constraints() -> Array[Cell]:
+func _find_crowns_per_column() -> Array[Cell]:
+	var problem_cells: Array[Cell] = []
+	for x in range(_size):
+		var crowns_in_column: Array[Cell] = []
+		for y in range(_size):
+			var cell = get_cell(Vector2i(x, y))
+			if cell.type == Cell.Type.CROWN:
+				crowns_in_column.append(cell)
+		if crowns_in_column.size() > 1:
+			problem_cells.append_array(crowns_in_column)
+	return problem_cells
+
+
+func _find_crowns_per_region() -> Array[Cell]:
+	var problem_cells: Array[Cell] = []
+	var regions := {}
+	for cell in cells:
+		if cell.type == Cell.Type.CROWN:
+			if not regions.has(cell.region):
+				regions[cell.region] = []
+			regions[cell.region].append(cell)
+	
+	for region_id in regions.keys():
+		var crowns_in_region = regions[region_id]
+		if crowns_in_region.size() > 1:
+			problem_cells.append_array(crowns_in_region)
+	return problem_cells
+
+
+func _find_touching_crowns() -> Array[Cell]:
 	var problem_cells: Array[Cell] = []
 	for cell in cells:
-		problem_cells.append_array(cell.has_illegal_neighbors())
+		if cell.type == Cell.Type.CROWN:
+			var adjacent_crowns = cell.get_adjacent_crowns()
+			for neighbor in adjacent_crowns:
+				if neighbor.type == Cell.Type.CROWN:
+					if not problem_cells.has(cell):
+						problem_cells.append(cell)
+					if not problem_cells.has(neighbor):
+						problem_cells.append(neighbor)
 	return problem_cells
 
 
 func get_problem_cells() -> Array[Cell]:
 	var problem_cells: Array[Cell] = []
-	for cell in cells:
-		problem_cells.append_array(cell.has_three_in_a_row())
-
-	problem_cells.append_array(_find_invalid_lines(LineType.COLUMN))
-	problem_cells.append_array(_find_invalid_lines(LineType.ROW))
-
-	problem_cells.append_array(_find_illegal_constraints())
-	return problem_cells
+	problem_cells.append_array(_find_crowns_per_row())
+	problem_cells.append_array(_find_crowns_per_column())
+	problem_cells.append_array(_find_crowns_per_region())
+	problem_cells.append_array(_find_touching_crowns())
+	
+	# Remove duplicates
+	var unique_cells: Array[Cell] = []
+	for cell in problem_cells:
+		if not unique_cells.has(cell):
+			unique_cells.append(cell)
+	return unique_cells
 
 
 func validate() -> bool:
+	update_auto_marks()
 	var problem_cells := get_problem_cells()
 	for cell in cells:
 		cell.invalid = cell in problem_cells
