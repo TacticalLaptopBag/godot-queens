@@ -53,12 +53,6 @@ func update_auto_marks():
 	if not auto_marks_enabled:
 		return
 	
-	# Store manual marks
-	var manual_marks: Array[Vector2i] = []
-	for cell in cells:
-		if cell.type == Cell.Type.MARK:
-			manual_marks.append(cell.position)
-	
 	# Clear all AUTO_MARK to EMPTY
 	for cell in cells:
 		if cell.type == Cell.Type.AUTO_MARK:
@@ -85,12 +79,6 @@ func update_auto_marks():
 				if neighbor != null and neighbor != cell and neighbor.type == Cell.Type.EMPTY:
 					neighbor.type = Cell.Type.AUTO_MARK
 	
-	# Restore manual marks
-	for pos in manual_marks:
-		var cell = get_cell(pos)
-		if cell.type == Cell.Type.AUTO_MARK:
-			cell.type = Cell.Type.MARK
-
 
 func _find_crowns_per_row() -> Array[Cell]:
 	var problem_cells: Array[Cell] = []
@@ -170,12 +158,3 @@ func validate() -> bool:
 		cell.invalid = cell in problem_cells
 
 	return problem_cells.is_empty()
-
-
-func get_filled_cells() -> Array[Cell]:
-	var filled_cells: Array[Cell] = []
-	for cell in cells:
-		if cell.type == Cell.Type.EMPTY:
-			continue
-		filled_cells.append(cell)
-	return filled_cells
