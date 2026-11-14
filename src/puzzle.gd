@@ -22,7 +22,7 @@ func _populate(size: int):
 			var cell := Cell.new(Vector2(x, y))
 			cells.append(cell)
 	_size = floor(sqrt(cells.size()))
-	
+
 	for cell in cells:
 		cell.north = get_cell(cell.position - Vector2(0, 1))
 		cell.south = get_cell(cell.position + Vector2(0, 1))
@@ -52,12 +52,12 @@ func has_all_crowns_placed() -> bool:
 func update_auto_marks():
 	if not auto_marks_enabled:
 		return
-	
+
 	# Clear all AUTO_MARK to EMPTY
 	for cell in cells:
 		if cell.type == Cell.Type.AUTO_MARK:
 			cell.type = Cell.Type.EMPTY
-	
+
 	# Apply auto-marks for each crown
 	for cell in cells:
 		if cell.type == Cell.Type.CROWN:
@@ -66,19 +66,19 @@ func update_auto_marks():
 				var row_cell = get_cell(Vector2i(x, int(cell.position.y)))
 				if row_cell != cell and row_cell.type == Cell.Type.EMPTY:
 					row_cell.type = Cell.Type.AUTO_MARK
-			
+
 			# Mark same column
 			for y in range(_size):
 				var col_cell = get_cell(Vector2i(int(cell.position.x), y))
 				if col_cell != cell and col_cell.type == Cell.Type.EMPTY:
 					col_cell.type = Cell.Type.AUTO_MARK
-			
+
 			# Mark 8 neighbors
 			for direction in Cell.Direction.values():
 				var neighbor = cell.get_neighbor(direction)
 				if neighbor != null and neighbor != cell and neighbor.type == Cell.Type.EMPTY:
 					neighbor.type = Cell.Type.AUTO_MARK
-	
+
 
 func _find_crowns_per_row() -> Array[Cell]:
 	var problem_cells: Array[Cell] = []
@@ -114,7 +114,7 @@ func _find_crowns_per_region() -> Array[Cell]:
 			if not regions.has(cell.region):
 				regions[cell.region] = []
 			regions[cell.region].append(cell)
-	
+
 	for region_id in regions.keys():
 		var crowns_in_region = regions[region_id]
 		if crowns_in_region.size() > 1:
@@ -142,7 +142,7 @@ func get_problem_cells() -> Array[Cell]:
 	problem_cells.append_array(_find_crowns_per_column())
 	problem_cells.append_array(_find_crowns_per_region())
 	problem_cells.append_array(_find_touching_crowns())
-	
+
 	# Remove duplicates
 	var unique_cells: Array[Cell] = []
 	for cell in problem_cells:

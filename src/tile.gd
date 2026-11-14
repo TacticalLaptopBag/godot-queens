@@ -107,10 +107,11 @@ func clear_tile():
 
 
 func _update_color():
-	mark.modulate = ThemeManager.current_theme.sun
-	crown.modulate = ThemeManager.current_theme.moon
+	mark.modulate = ThemeManager.current_theme.mark
+	crown.modulate = ThemeManager.current_theme.crown
 	selection_indicator.modulate = ThemeManager.current_theme.selection
 	self_modulate = ThemeManager.current_theme.normal
+	fill_sprite.modulate = ThemeManager.current_theme.regions[cell.region]
 
 
 func _update_type_appearance():

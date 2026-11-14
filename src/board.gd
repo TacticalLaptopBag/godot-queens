@@ -24,6 +24,7 @@ var changes: Array[Change] = []
 var undoing := false
 var start_ticks := -1
 var end_ticks := -1
+var validating := false
 
 signal puzzle_changed()
 signal cell_type_changed(cell: Cell, old_type: Cell.Type)
@@ -72,7 +73,9 @@ func create_board():
 
 
 func _update_state():
+	validating = true
 	var is_valid := puzzle.validate()
+	validating = false
 	if is_valid and puzzle.has_all_crowns_placed():
 		print("you're winner!")
 		for cell in puzzle.cells:
@@ -89,6 +92,8 @@ func _update_bounding_box():
 
 
 func _on_cell_type_changed(cell: Cell, old_type: Cell.Type):
+	if validating:
+		return
 	print("Cell changed: "+str(cell.position)+": "+str(cell.type))
 	_update_state()
 	if not undoing:
