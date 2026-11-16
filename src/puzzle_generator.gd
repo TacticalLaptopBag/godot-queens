@@ -5,8 +5,6 @@ extends Resource
 @export var pool_size := 10
 @export var grid_size := 6
 
-var _data_persistence: Node = null
-
 var _puzzles: Array[Puzzle] = []
 var _puzzles_lock := Mutex.new()
 var puzzle_generated_sem := Semaphore.new()
@@ -24,9 +22,7 @@ signal puzzle_generated(generator: PuzzleGenerator)
 
 
 func queue_generation():
-	_data_persistence = Engine.get_singleton("DataPersistence")
-	if _data_persistence:
-		_puzzles = _data_persistence.fetch_puzzles(grid_size)
+	_puzzles = DataPersistence.fetch_puzzles(grid_size)
 	_top_up_pool()
 
 
@@ -41,11 +37,8 @@ func get_puzzle() -> Puzzle:
 	_puzzles_lock.lock()
 	var puzzle: Puzzle = _puzzles.pop_front()
 	_puzzles_lock.unlock()
-	if _data_persistence == null:
-		_data_persistence = Engine.get_singleton("DataPersistence")
-	if _data_persistence:
-		_data_persistence.remove_first_puzzle(puzzle.grid_size())
-		_data_persistence.save()
+	DataPersistence.remove_first_puzzle(puzzle.grid_size())
+	DataPersistence.save()
 
 	# A puzzle was consumed — schedule a replacement.
 	_top_up_pool()
@@ -87,8 +80,6 @@ func _top_up_pool():
 
 
 func _generate_and_store():
-	if _data_persistence == null:
-		_data_persistence = Engine.get_singleton("DataPersistence")
 	var puzzle := _generate_puzzle(grid_size)
 	if puzzle == null:
 		_in_flight_lock.lock()
@@ -99,16 +90,14 @@ func _generate_and_store():
 
 	_puzzles_lock.lock()
 	_puzzles.push_back(puzzle)
-	if _data_persistence:
-		_data_persistence.store_puzzle(puzzle)
+	DataPersistence.store_puzzle(puzzle)
 	_puzzles_lock.unlock()
 
 	_in_flight_lock.lock()
 	_in_flight -= 1
 	_in_flight_lock.unlock()
 
-	if _data_persistence:
-		_data_persistence.save()
+	DataPersistence.save()
 	puzzle_generated_sem.post()
 	puzzle_generated.emit.call_deferred(self)
 
