@@ -79,6 +79,11 @@ func update_auto_marks():
 				if neighbor != null and neighbor != cell and neighbor.type == Cell.Type.EMPTY:
 					neighbor.type = Cell.Type.AUTO_MARK
 
+			# Mark same region
+			for other_cell in cells:
+				if other_cell != cell and other_cell.region == cell.region and other_cell.type == Cell.Type.EMPTY:
+					other_cell.type = Cell.Type.AUTO_MARK
+
 
 func _find_crowns_per_row() -> Array[Cell]:
 	var problem_cells: Array[Cell] = []
