@@ -52,6 +52,8 @@ func _update_selected_appearance():
 	selection_indicator.visible = selected
 
 
+var _drag_started := false
+
 func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if cell.locked:
 		return
@@ -60,15 +62,31 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 		if event.is_pressed():
 			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				long_press_timer.start()
+				_drag_started = false
 		elif event.is_released():
-			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT and not long_press_timer.is_stopped():
+			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				long_press_timer.stop()
-				toggle_tile_type()
-				tap_haptics.vibrate()
+				if not _drag_started:
+					# No drag occurred, this was a click
+					toggle_tile_type()
+					tap_haptics.vibrate()
+				_drag_started = false
 			elif event.button_index == MouseButton.MOUSE_BUTTON_RIGHT:
 				toggle_crown_tile()
 			elif event.button_index == MouseButton.MOUSE_BUTTON_MIDDLE:
 				clear_tile()
+	elif event is InputEventMouseMotion or event is InputEventScreenDrag:
+		# Handle drag to mark multiple cells
+		if Input.is_mouse_button_pressed(MouseButton.MOUSE_BUTTON_LEFT):
+			_drag_started = true
+			# Mark cells as we drag over them
+			# Stop long press timer to prevent crown toggle
+			if not long_press_timer.is_stopped():
+				long_press_timer.stop()
+			# Only set to MARK if empty, don't toggle to crown
+			if cell.type == Cell.Type.EMPTY:
+				cell.type = Cell.Type.MARK
+				tap_haptics.vibrate()
 
 
 func _on_long_press_timer_timeout():
