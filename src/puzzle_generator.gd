@@ -111,21 +111,39 @@ func _should_stop() -> bool:
 
 
 func _solve_crown_placement(size: int) -> Array[Vector2i]:
+	# Create a fresh RNG instance with unique seed for each puzzle to ensure true randomness
+	# Using time-based seed ensures different puzzles even with parallel generation
+	var local_rng := RandomNumberGenerator.new()
+	local_rng.randomize()
+	
 	var cols_used: Array[bool] = []
 	for i in range(size):
 		cols_used.append(false)
 	var current_crowns: Array[Vector2i] = []
-	return _place_crown_recursive(0, size, current_crowns, cols_used)
+	return _place_crown_recursive(0, size, current_crowns, cols_used, local_rng)
 
 
-func _place_crown_recursive(row: int, size: int, current_crowns: Array[Vector2i], cols_used: Array[bool]) -> Array[Vector2i]:
+func _place_crown_recursive(row: int, size: int, current_crowns: Array[Vector2i], cols_used: Array[bool], rng: RandomNumberGenerator = null) -> Array[Vector2i]:
 	if row == size:
 		return current_crowns
 	
+	var available_cols: Array[int] = []
 	for col in range(size):
-		if cols_used[col]:
-			continue
-		
+		if not cols_used[col]:
+			available_cols.append(col)
+	
+	# Shuffle available columns for randomness
+	if rng != null:
+		# Fisher-Yates shuffle with local RNG
+		for i in range(available_cols.size() - 1, 0, -1):
+			var j = rng.randi_range(0, i)
+			var temp = available_cols[i]
+			available_cols[i] = available_cols[j]
+			available_cols[j] = temp
+	else:
+		available_cols.shuffle()
+	
+	for col in available_cols:
 		var pos := Vector2i(col, row)
 		var valid := true
 		for crown in current_crowns:
@@ -137,7 +155,7 @@ func _place_crown_recursive(row: int, size: int, current_crowns: Array[Vector2i]
 			current_crowns.append(pos)
 			cols_used[col] = true
 			
-			var result := _place_crown_recursive(row + 1, size, current_crowns, cols_used)
+			var result := _place_crown_recursive(row + 1, size, current_crowns, cols_used, rng)
 			if result != null:
 				return result
 			
