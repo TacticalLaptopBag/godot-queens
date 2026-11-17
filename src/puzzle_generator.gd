@@ -34,19 +34,26 @@ func is_puzzle_ready() -> bool:
 
 
 func get_puzzle() -> Puzzle:
-	_puzzles_lock.lock()
-	var puzzle: Puzzle = _puzzles.pop_front()
-	_puzzles_lock.unlock()
-	DataPersistence.remove_first_puzzle(puzzle.grid_size())
+	var puzzle: Puzzle = null
+	while puzzle == null:
+		_puzzles_lock.lock()
+		puzzle = _puzzles.pop_front()
+		if puzzle != null:
+			# Done under the lock so the in-memory pool and the persisted pool stay in sync.
+			DataPersistence.remove_first_puzzle(puzzle.grid_size())
+		_puzzles_lock.unlock()
+
+		if puzzle == null:
+			if _is_stopped():
+				return null
+			# Pool is empty: make sure something is being generated, then wait for it.
+			_top_up_pool()
+			puzzle_generated_sem.wait()
+
 	DataPersistence.save()
 
 	# A puzzle was consumed — schedule a replacement.
 	_top_up_pool()
-
-	if puzzle == null:
-		puzzle_generated_sem.wait()
-		return get_puzzle()
-
 	return puzzle
 
 
@@ -102,391 +109,304 @@ func _generate_and_store():
 	puzzle_generated.emit.call_deferred(self)
 
 
-## Determines if the generator needs to be cut short, likely due to application close
+## Determines if the generator needs to be cut short, likely due to application close.
+## (The in-flight counter is decremented by _generate_and_store when it sees a null puzzle.)
 func _should_stop() -> bool:
+	return _is_stopped()
+
+
+func _is_stopped() -> bool:
 	_stop_lock.lock()
 	var should_stop := _stop
 	_stop_lock.unlock()
-	if should_stop:
-		_in_flight_lock.lock()
-		_in_flight -= 1
-		_in_flight_lock.unlock()
 	return should_stop
 
 
-func _generate_regions_first(size: int, rng: RandomNumberGenerator) -> Array:
-	# Create region map initialized to -1 (unassigned)
-	var region_map: Array = []
-	# Type annotation workaround for Godot 4.7
-	region_map = []
-	for y in range(size):
-		var row: Array[int] = []
-		for x in range(size):
-			row.append(-1)
-		region_map.append(row)
-	
-	# Step 1: Place seeds - one per region, ensure no adjacency
-	var seeds: Array[Vector2i] = []
-	var attempts := 0
-	var max_seed_attempts := 10000
-	
-	# Create list of all positions and shuffle
-	var all_positions: Array[Vector2i] = []
-	for y in range(size):
-		for x in range(size):
-			all_positions.append(Vector2i(x, y))
-	
-	# Shuffle positions
-	for i in range(all_positions.size() - 1, 0, -1):
-		var j := rng.randi_range(0, i)
-		var temp := all_positions[i]
-		all_positions[i] = all_positions[j]
-		all_positions[j] = temp
-	
-	# Pick first size positions that are not adjacent
-	for pos in all_positions:
-		if seeds.size() >= size:
-			break
-		
-		# Check adjacency to existing seeds (only orthogonal for more flexibility)
-		var adjacent := false
-		for seed in seeds:
-			if abs(seed.x - pos.x) + abs(seed.y - pos.y) == 1:
-				adjacent = true
-				break
-		
-		if not adjacent:
-			seeds.append(pos)
-			region_map[pos.y][pos.x] = seeds.size() - 1
-	
-	if seeds.size() < size:
-		return []
-	
-	# Step 2: Grow regions randomly
-	var frontier: Array[Dictionary] = []
-	for i in range(seeds.size()):
-		var seed := seeds[i]
-		frontier.append({"pos": seed, "reg_id": i})
-	
-	var unassigned_count := size * size - seeds.size()
-	var iterations := 0
-	var max_iterations := size * size * 10
-	
-	while unassigned_count > 0 and iterations < max_iterations:
-		iterations += 1
-		if frontier.is_empty():
-			# No frontier, try to find unassigned cells adjacent to assigned ones
-			for y in range(size):
-				for x in range(size):
-					if region_map[y][x] == -1:
-						var adjacent_regions: Array[int] = []
-						if y > 0 and region_map[y-1][x] != -1:
-							adjacent_regions.append(region_map[y-1][x])
-						if y < size - 1 and region_map[y+1][x] != -1:
-							adjacent_regions.append(region_map[y+1][x])
-						if x > 0 and region_map[y][x-1] != -1:
-							adjacent_regions.append(region_map[y][x-1])
-						if x < size - 1 and region_map[y][x+1] != -1:
-							adjacent_regions.append(region_map[y][x+1])
-						
-						if adjacent_regions.size() > 0:
-							var reg_id := adjacent_regions[rng.randi_range(0, adjacent_regions.size() - 1)]
-							region_map[y][x] = reg_id
-							unassigned_count -= 1
-							frontier.append({"pos": Vector2i(x, y), "reg_id": reg_id})
-			continue
-		
-		# Shuffle frontier for randomness
-		for i in range(frontier.size() - 1, 0, -1):
-			var j := rng.randi_range(0, i)
-			var temp := frontier[i]
-			frontier[i] = frontier[j]
-			frontier[j] = temp
-		
-		var item = frontier.pop_front()
-		var pos = Vector2i(item.pos)
-		var reg_id = int(item.reg_id)
-		
-		# Get neighbors
-		var neighbors: Array[Vector2i] = []
-		if pos.x > 0:
-			neighbors.append(Vector2i(pos.x - 1, pos.y))
-		if pos.x < size - 1:
-			neighbors.append(Vector2i(pos.x + 1, pos.y))
-		if pos.y > 0:
-			neighbors.append(Vector2i(pos.x, pos.y - 1))
-		if pos.y < size - 1:
-			neighbors.append(Vector2i(pos.x, pos.y + 1))
-		
-		# Shuffle neighbors
-		for i in range(neighbors.size() - 1, 0, -1):
-			var j := rng.randi_range(0, i)
-			var temp := neighbors[i]
-			neighbors[i] = neighbors[j]
-			neighbors[j] = temp
-		
-		var assigned := false
-		for n in neighbors:
-			if region_map[n.y][n.x] == -1:
-				region_map[n.y][n.x] = reg_id
-				unassigned_count -= 1
-				frontier.append({"pos": n, "reg_id": reg_id})
-				assigned = true
-				break
-		
-		# If no neighbor available, keep item in frontier for later
-		if not assigned:
-			frontier.append(item)
-	
-	# Step 3: Validate regions are connected
-	if not _validate_regions_connected(size, region_map):
-		return []
-	
-	return region_map
+# ---------------------------------------------------------------------------
+# Puzzle generation
+#
+# Strategy: build the answer first, then build a board around it.
+#   1. Pick a random valid queen placement (one per row/column, none touching).
+#   2. Grow one region outward from each queen. Every region now holds exactly
+#      one queen of that placement, so the placement is a valid solution.
+#   3. Count solutions. If another one exists, move a single cell from one
+#      region to a neighbouring region so that the other solution breaks while
+#      the intended one survives. Repeat until the solution is unique.
+#
+# Region maps are flat PackedInt32Arrays indexed by (y * size + x).
+# ---------------------------------------------------------------------------
 
+# Upper bound on repair steps for a single board before it is thrown away and
+# a fresh one is built. Boards normally converge in a handful of steps.
+const MAX_REPAIR_STEPS := 100
+# Safety valve only; in practice the first few boards succeed.
+const MAX_BOARD_ATTEMPTS := 1000
 
-func _validate_regions_connected(size: int, region_map: Array) -> bool:
-	# Check each region is orthogonally connected via BFS
-	for region_id in range(size):
-		# Find first cell with this region
-		var start_pos: Vector2i = Vector2i(-1, -1)
-		for y in range(size):
-			for x in range(size):
-				if region_map[y][x] == region_id:
-					start_pos = Vector2i(x, y)
-					break
-			if start_pos.x != -1:
-				break
-		
-		if start_pos.x == -1:
-			return false  # Region has no cells
-		
-		# BFS to find all reachable cells in this region
-		var visited: Dictionary = {}
-		var queue: Array[Vector2i] = [start_pos]
-		visited[str(start_pos.x) + "," + str(start_pos.y)] = true
-		var count := 0
-		
-		while queue.size() > 0:
-			var pos := Vector2i(queue.pop_front())
-			count += 1
-			
-			var neighbors: Array[Vector2i] = [
-				Vector2i(pos.x + 1, pos.y),
-				Vector2i(pos.x - 1, pos.y),
-				Vector2i(pos.x, pos.y + 1),
-				Vector2i(pos.x, pos.y - 1)
-			]
-			
-			for n in neighbors:
-				if n.x >= 0 and n.x < size and n.y >= 0 and n.y < size:
-					if region_map[n.y][n.x] == region_id:
-						var key := str(n.x) + "," + str(n.y)
-						if not visited.has(key):
-							visited[key] = true
-							queue.append(n)
-		
-		# Count total cells in region
-		var total_count := 0
-		for y in range(size):
-			for x in range(size):
-				if region_map[y][x] == region_id:
-					total_count += 1
-		
-		if count != total_count:
-			return false  # Region is disconnected
-	
-	# Also verify all cells are assigned
-	for y in range(size):
-		for x in range(size):
-			if region_map[y][x] == -1:
-				return false
-	
-	return true
-
-
-func _find_crown_placement(size: int, region_map: Array, rng: RandomNumberGenerator) -> Array[Vector2i]:
-	var cols_used: Array[bool] = []
-	for i in range(size):
-		cols_used.append(false)
-	var regions_used: Array[bool] = []
-	for i in range(size):
-		regions_used.append(false)
-	var current_crowns: Array[Vector2i] = []
-	return _place_crown_recursive_with_regions(0, size, current_crowns, cols_used, regions_used, region_map, rng)
-
-
-func _place_crown_recursive_with_regions(row: int, size: int, current_crowns: Array[Vector2i], cols_used: Array[bool], regions_used: Array[bool], region_map: Array, rng: RandomNumberGenerator) -> Array[Vector2i]:
-	if row == size:
-		return current_crowns
-	
-	var available_cols: Array[int] = []
-	for col in range(size):
-		if not cols_used[col]:
-			available_cols.append(col)
-	
-	# Shuffle available columns for randomness
-	for i in range(available_cols.size() - 1, 0, -1):
-		var j := rng.randi_range(0, i)
-		var temp := available_cols[i]
-		available_cols[i] = available_cols[j]
-		available_cols[j] = temp
-	
-	for col in available_cols:
-		var pos := Vector2i(col, row)
-		var region_id := int(region_map[row][col])
-		
-		# Check constraints
-		var valid := true
-		
-		# Region not used
-		if regions_used[region_id]:
-			valid = false
-		else:
-			# No adjacency with placed crowns (8-direction)
-			for crown in current_crowns:
-				if abs(crown.x - pos.x) <= 1 and abs(crown.y - pos.y) <= 1:
-					valid = false
-					break
-		
-		if valid:
-			current_crowns.append(pos)
-			cols_used[col] = true
-			regions_used[region_id] = true
-			
-			var result := _place_crown_recursive_with_regions(row + 1, size, current_crowns, cols_used, regions_used, region_map, rng)
-			if result != null:
-				return result
-			
-			current_crowns.pop_back()
-			cols_used[col] = false
-			regions_used[region_id] = false
-	
-	return []
-
-
-func _count_solutions(size: int, region_map: Array, limit: int) -> int:
-	var cols_used: Array[bool] = []
-	for i in range(size):
-		cols_used.append(false)
-	var regions_used: Array[bool] = []
-	for i in range(size):
-		regions_used.append(false)
-	var current_crowns: Array[Vector2i] = []
-	var count_ref: Array[int] = [0]
-	_count_solutions_recursive(0, size, current_crowns, cols_used, regions_used, region_map, limit, count_ref)
-	return count_ref[0]
-
-
-func _count_solutions_recursive(row: int, size: int, current_crowns: Array[Vector2i], cols_used: Array[bool], regions_used: Array[bool], region_map: Array, limit: int, count_ref: Array[int]) -> bool:
-	if count_ref[0] >= limit:
-		return true
-	
-	if row == size:
-		count_ref[0] += 1
-		return count_ref[0] >= limit
-	
-	var available_cols: Array[int] = []
-	for col in range(size):
-		if not cols_used[col]:
-			available_cols.append(col)
-	
-	# Try columns in order (no shuffle for counting)
-	for col in available_cols:
-		var pos := Vector2i(col, row)
-		var region_id := int(region_map[row][col])
-		
-		# Check constraints
-		var valid := true
-		
-		if regions_used[region_id]:
-			valid = false
-		else:
-			for crown in current_crowns:
-				if abs(crown.x - pos.x) <= 1 and abs(crown.y - pos.y) <= 1:
-					valid = false
-					break
-		
-		if valid:
-			current_crowns.append(pos)
-			cols_used[col] = true
-			regions_used[region_id] = true
-			
-			if _count_solutions_recursive(row + 1, size, current_crowns, cols_used, regions_used, region_map, limit, count_ref):
-				current_crowns.pop_back()
-				cols_used[col] = false
-				regions_used[region_id] = false
-				return true
-			
-			current_crowns.pop_back()
-			cols_used[col] = false
-			regions_used[region_id] = false
-	
-	return count_ref[0] >= limit
-
-
-func _build_puzzle(size: int, region_map: Array, crowns: Array[Vector2i]) -> Puzzle:
-	var puzzle := Puzzle.new(size)
-	
-	for y in range(size):
-		for x in range(size):
-			var cell := puzzle.get_cell(Vector2i(x, y))
-			cell.region = region_map[y][x]
-	
-	puzzle.solution_crowns = crowns
-	return puzzle
+const _DIRS_4: Array[Vector2i] = [
+	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
+]
 
 
 func _generate_puzzle(size: int) -> Puzzle:
-	print("Generating %dx%d puzzle..." % [size, size])
+	if size == 2 or size == 3 or size < 1:
+		push_error("Queens puzzles cannot exist for grid size %d" % size)
+		return null
+
 	var start_ticks := Time.get_ticks_msec()
-	
-	# Size-dependent attempts for better success rates
-	var max_attempts := 100
-	match size:
-		4:
-			max_attempts = 100
-		5:
-			max_attempts = 500
-		6:
-			max_attempts = 500
-		7, 8:
-			max_attempts = 1000
-	
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	
-	for attempt in range(max_attempts):
+
+	for attempt in range(MAX_BOARD_ATTEMPTS):
 		if _should_stop():
 			return null
-		
-		# Generate regions first
-		var region_map := _generate_regions_first(size, rng)
-		if region_map.is_empty():
+
+		var solution := _generate_solution(size, rng)
+		if solution.is_empty():
 			continue
-		
-		# Find crown placement with backtracking
-		var local_rng := RandomNumberGenerator.new()
-		local_rng.randomize()
-		var crowns := _find_crown_placement(size, region_map, local_rng)
-		
-		if crowns.is_empty():
+
+		var regions := _grow_regions(size, solution, rng)
+		if not _make_unique(size, regions, solution, rng):
 			continue
-		
-		# Check uniqueness by counting solutions
-		var solution_count := _count_solutions(size, region_map, 2)
-		if solution_count == 1:
-			var puzzle := _build_puzzle(size, region_map, crowns)
-			
-			if debug:
-				print("Solution crowns: ", crowns)
-				print("Region map:")
-				for row in region_map:
-					print(row)
-			
-			var end_ticks := Time.get_ticks_msec()
-			print("Generation for %dx%d took %dms (attempt %d)" % [size, size, end_ticks - start_ticks, attempt + 1])
-			return puzzle
-	
-	print("Failed to generate unique puzzle for size %d after %d attempts" % [size, max_attempts])
+
+		var puzzle := _build_puzzle(size, regions, solution)
+		if debug:
+			print("Solution columns by row: ", solution)
+			print("Region map:")
+			for y in range(size):
+				print(regions.slice(y * size, (y + 1) * size))
+		print("Generation for %dx%d took %dms (attempt %d)" % [
+			size, size, Time.get_ticks_msec() - start_ticks, attempt + 1,
+		])
+		return puzzle
+
+	push_warning("Failed to generate unique puzzle for size %d after %d attempts" % [size, MAX_BOARD_ATTEMPTS])
 	return null
+
+
+## Returns an Array of columns, one per row (solution[row] = column of that row's queen).
+func _generate_solution(size: int, rng: RandomNumberGenerator) -> PackedInt32Array:
+	var solution := PackedInt32Array()
+	solution.resize(size)
+	if _place_queen_row(0, size, 0, -1, solution, rng):
+		return solution
+	return PackedInt32Array()
+
+
+func _place_queen_row(row: int, size: int, cols_mask: int, prev_col: int, solution: PackedInt32Array, rng: RandomNumberGenerator) -> bool:
+	if row == size:
+		return true
+	for col in _shuffled_range(size, rng):
+		if cols_mask & (1 << col):
+			continue
+		# Queens in consecutive rows may not touch (diagonally or otherwise).
+		if prev_col >= 0 and absi(col - prev_col) <= 1:
+			continue
+		solution[row] = col
+		if _place_queen_row(row + 1, size, cols_mask | (1 << col), col, solution, rng):
+			return true
+	return false
+
+
+## Grows one connected region from each queen until every cell is assigned.
+func _grow_regions(size: int, solution: PackedInt32Array, rng: RandomNumberGenerator) -> PackedInt32Array:
+	var regions := PackedInt32Array()
+	regions.resize(size * size)
+	regions.fill(-1)
+
+	# Shuffle region ids so a region's id doesn't correlate with its queen's row.
+	var ids := _shuffled_range(size, rng)
+	for row in range(size):
+		regions[row * size + solution[row]] = ids[row]
+
+	var unassigned := size * size - size
+	while unassigned > 0:
+		# Every (empty cell, adjacent region) pair is a legal growth step.
+		var options: Array[Vector2i] = []
+		for idx in range(size * size):
+			if regions[idx] != -1:
+				continue
+			var x := idx % size
+			var y := idx / size
+			for dir in _DIRS_4:
+				var nx := x + dir.x
+				var ny := y + dir.y
+				if nx < 0 or ny < 0 or nx >= size or ny >= size:
+					continue
+				var neighbor_region := regions[ny * size + nx]
+				if neighbor_region != -1:
+					options.append(Vector2i(idx, neighbor_region))
+
+		var pick := options[rng.randi_range(0, options.size() - 1)]
+		regions[pick.x] = pick.y
+		unassigned -= 1
+
+	return regions
+
+
+## Repeatedly breaks alternative solutions until only `solution` is left.
+## Returns false if the board could not be fixed (caller should start over).
+func _make_unique(size: int, regions: PackedInt32Array, solution: PackedInt32Array, rng: RandomNumberGenerator) -> bool:
+	for _step in range(MAX_REPAIR_STEPS):
+		var found := _find_solutions(size, regions, 2)
+		if found.is_empty():
+			return false # Should be impossible: `solution` is always kept valid.
+		if found.size() == 1:
+			return true # The only solution is the intended one.
+
+		var other := found[1] if found[0] == solution else found[0]
+		if not _break_solution(size, regions, solution, other, rng):
+			return false
+	return false
+
+
+## Changes one cell's region so that `other` stops being a valid solution
+## while `solution` stays valid. Returns false if no safe change exists.
+##
+## `other` places a queen on some cell the intended solution doesn't use.
+## Re-assigning that cell to a neighbouring region gives `other` two queens in
+## one region (and none in the other), so it can no longer be a solution.
+func _break_solution(size: int, regions: PackedInt32Array, solution: PackedInt32Array, other: PackedInt32Array, rng: RandomNumberGenerator) -> bool:
+	var region_sizes := PackedInt32Array()
+	region_sizes.resize(size)
+	for region in regions:
+		region_sizes[region] += 1
+
+	var preferred: Array[Vector2i] = [] # (cell index, new region) keeping the old region >= 2 cells
+	var fallback: Array[Vector2i] = []
+
+	for row in range(size):
+		if other[row] == solution[row]:
+			continue
+		var idx := row * size + other[row] # never one of the intended queens
+		var from_region := regions[idx]
+		if not _region_connected_without(size, regions, solution, idx):
+			continue
+
+		var x := idx % size
+		var y := idx / size
+		var seen_regions := {}
+		for dir in _DIRS_4:
+			var nx := x + dir.x
+			var ny := y + dir.y
+			if nx < 0 or ny < 0 or nx >= size or ny >= size:
+				continue
+			var to_region := regions[ny * size + nx]
+			if to_region == from_region or seen_regions.has(to_region):
+				continue
+			seen_regions[to_region] = true
+			var option := Vector2i(idx, to_region)
+			if region_sizes[from_region] > 2:
+				preferred.append(option)
+			else:
+				fallback.append(option)
+
+	var pool := preferred if not preferred.is_empty() else fallback
+	if pool.is_empty():
+		return false
+
+	var choice := pool[rng.randi_range(0, pool.size() - 1)]
+	regions[choice.x] = choice.y
+	return true
+
+
+## True if the region containing `removed_idx` stays orthogonally connected
+## once that cell is taken out of it.
+func _region_connected_without(size: int, regions: PackedInt32Array, solution: PackedInt32Array, removed_idx: int) -> bool:
+	var region := regions[removed_idx]
+
+	var remaining := 0
+	for idx in range(size * size):
+		if regions[idx] == region and idx != removed_idx:
+			remaining += 1
+	if remaining == 0:
+		return false # Would delete the region entirely.
+
+	# Start the flood fill from this region's intended queen (always present).
+	var start := -1
+	for row in range(size):
+		var queen_idx := row * size + solution[row]
+		if regions[queen_idx] == region:
+			start = queen_idx
+			break
+	if start == -1:
+		return false
+
+	var visited := PackedByteArray()
+	visited.resize(size * size)
+	visited[start] = 1
+	var stack: Array[int] = [start]
+	var reached := 0
+	while not stack.is_empty():
+		var idx: int = stack.pop_back()
+		reached += 1
+		var x := idx % size
+		var y := idx / size
+		for dir in _DIRS_4:
+			var nx := x + dir.x
+			var ny := y + dir.y
+			if nx < 0 or ny < 0 or nx >= size or ny >= size:
+				continue
+			var n_idx := ny * size + nx
+			if n_idx == removed_idx or visited[n_idx] == 1 or regions[n_idx] != region:
+				continue
+			visited[n_idx] = 1
+			stack.append(n_idx)
+
+	return reached == remaining
+
+
+## Finds up to `limit` distinct solutions. Each solution is an array of
+## columns, one per row.
+func _find_solutions(size: int, regions: PackedInt32Array, limit: int) -> Array[PackedInt32Array]:
+	var found: Array[PackedInt32Array] = []
+	var current := PackedInt32Array()
+	current.resize(size)
+	_search_row(0, size, regions, 0, 0, -1, current, found, limit)
+	return found
+
+
+func _search_row(row: int, size: int, regions: PackedInt32Array, cols_mask: int, regions_mask: int, prev_col: int, current: PackedInt32Array, found: Array[PackedInt32Array], limit: int) -> void:
+	if row == size:
+		found.append(current.duplicate())
+		return
+
+	for col in range(size):
+		if cols_mask & (1 << col):
+			continue
+		if prev_col >= 0 and absi(col - prev_col) <= 1:
+			continue
+		var region_bit := 1 << regions[row * size + col]
+		if regions_mask & region_bit:
+			continue
+
+		current[row] = col
+		_search_row(row + 1, size, regions, cols_mask | (1 << col), regions_mask | region_bit, col, current, found, limit)
+		if found.size() >= limit:
+			return
+
+
+func _shuffled_range(count: int, rng: RandomNumberGenerator) -> Array[int]:
+	var values: Array[int] = []
+	for i in range(count):
+		values.append(i)
+	for i in range(count - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var temp := values[i]
+		values[i] = values[j]
+		values[j] = temp
+	return values
+
+
+func _build_puzzle(size: int, regions: PackedInt32Array, solution: PackedInt32Array) -> Puzzle:
+	var puzzle := Puzzle.new(size)
+
+	for y in range(size):
+		for x in range(size):
+			var cell := puzzle.get_cell(Vector2i(x, y))
+			cell.region = regions[y * size + x]
+
+	var crowns: Array[Vector2i] = []
+	for row in range(size):
+		crowns.append(Vector2i(solution[row], row))
+	puzzle.solution_crowns = crowns
+	return puzzle

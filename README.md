@@ -45,7 +45,9 @@ The following local models were used for code assistance:
 * `google/gemma-4-31b-qat`
 * `meta/muse-glimmer`
 
-No AI was used in the creation of assets, only for code.
+Claude Sonnet 5.5 was used to create the puzzle generator.
+
+No AI was used in the creation of assets.
 
 
 [queens]: https://www.linkedin.com/games/queens/
