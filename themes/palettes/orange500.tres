@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://c0a5bw2bdryl1"]
+
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_g0dhr"]
+
+[resource]
+script = ExtResource("1_g0dhr")
+name = "Orange 500"
+bg_color = Color(1, 0.59607846, 0, 1)
+fg_color = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"

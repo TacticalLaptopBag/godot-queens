@@ -4,6 +4,14 @@
 [ext_resource type="Script" uid="uid://yy2lugkcy2wv" path="res://src/game_theme.gd" id="1_uo8tp"]
 [ext_resource type="StyleBox" uid="uid://b10f180ykegce" path="res://material3/light/panel_raised_1.tres" id="2_ljlij"]
 [ext_resource type="Theme" uid="uid://8jitidnxpeic" path="res://material3/light/material-theme-light.tres" id="2_s5vpt"]
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="3_hppvt"]
+[ext_resource type="Resource" uid="uid://dsam33fpw6ff6" path="res://themes/palettes/red700.tres" id="4_hppvt"]
+[ext_resource type="Resource" uid="uid://cdt1g8ghr51dm" path="res://themes/palettes/purple700.tres" id="5_b53he"]
+[ext_resource type="Resource" uid="uid://buajgakbh667i" path="res://themes/palettes/blue700.tres" id="6_nivmu"]
+[ext_resource type="Resource" uid="uid://5xleu3mt0c1d" path="res://themes/palettes/teal700.tres" id="7_e3vvj"]
+[ext_resource type="Resource" uid="uid://c8psrtj634gfc" path="res://themes/palettes/green800.tres" id="8_46lhu"]
+[ext_resource type="Resource" uid="uid://cgmaynyul83wn" path="res://themes/palettes/brown500.tres" id="9_uh018"]
+[ext_resource type="Resource" uid="uid://ckw4vvcbub46i" path="res://themes/palettes/orange700.tres" id="10_k0om8"]
 
 [resource]
 script = ExtResource("1_uo8tp")
@@ -16,5 +24,5 @@ normal = Color(0.88235295, 0.85882354, 0.8901961, 1)
 mark = Color(1, 1, 1, 1)
 crown = Color(1, 1, 1, 1)
 selection = Color(0.47790003, 0.81, 0.51110995, 0.49803922)
-regions = Array[Color]([Color(0, 0, 0, 1), Color(1, 0, 0, 1), Color(1, 0.5019608, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 1, 1, 1), Color(0, 0, 1, 1), Color(0.5019608, 0, 1, 1), Color(1, 0, 1, 1)])
+regions = Array[ExtResource("3_hppvt")]([ExtResource("4_hppvt"), ExtResource("5_b53he"), ExtResource("6_nivmu"), ExtResource("7_e3vvj"), ExtResource("8_46lhu"), ExtResource("9_uh018"), ExtResource("10_k0om8")])
 metadata/_custom_type_script = "uid://yy2lugkcy2wv"

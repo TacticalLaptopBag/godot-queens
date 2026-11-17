@@ -125,11 +125,12 @@ func clear_tile():
 
 
 func _update_color():
-	mark.modulate = ThemeManager.current_theme.mark
-	crown.modulate = ThemeManager.current_theme.crown
+	var region_color := ThemeManager.current_theme.regions[cell.region]
+	mark.modulate = region_color.fg_color
+	crown.modulate = region_color.fg_color
+	fill_sprite.modulate = region_color.bg_color
 	selection_indicator.modulate = ThemeManager.current_theme.selection
 	self_modulate = ThemeManager.current_theme.normal
-	fill_sprite.modulate = ThemeManager.current_theme.regions[cell.region]
 
 
 func _update_type_appearance():

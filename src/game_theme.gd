@@ -12,7 +12,5 @@ extends Resource
 
 @export_group("Tile")
 @export var normal: Color
-@export var mark: Color
-@export var crown: Color
 @export var selection: Color
-@export var regions: Array[Color] = []
+@export var regions: Array[GameThemeRegion] = []

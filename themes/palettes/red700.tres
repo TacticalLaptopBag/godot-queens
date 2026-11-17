@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://dsam33fpw6ff6"]
+
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_ot5w4"]
+
+[resource]
+script = ExtResource("1_ot5w4")
+name = "Red 700"
+bg_color = Color(0.827451, 0.18431373, 0.18431373, 1)
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"

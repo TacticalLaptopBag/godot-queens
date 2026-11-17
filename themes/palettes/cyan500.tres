@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://tvdtrb2c7bae"]
+
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_c3yoo"]
+
+[resource]
+script = ExtResource("1_c3yoo")
+name = "Cyan 500"
+bg_color = Color(0, 0.7372549, 0.83137256, 1)
+fg_color = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"

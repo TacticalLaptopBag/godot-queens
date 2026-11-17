@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://ptaerkqjm0ud"]
+
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_36pbf"]
+
+[resource]
+script = ExtResource("1_36pbf")
+name = "Pink 500"
+bg_color = Color(0.9137255, 0.11764706, 0.3882353, 1)
+fg_color = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"

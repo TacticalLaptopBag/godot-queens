@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://ca316hiop523l"]
+
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_xk8gi"]
+
+[resource]
+script = ExtResource("1_xk8gi")
+name = "Light Green 500"
+bg_color = Color(0.54509807, 0.7647059, 0.2901961, 1)
+fg_color = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
