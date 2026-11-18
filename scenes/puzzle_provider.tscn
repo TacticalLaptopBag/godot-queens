@@ -20,6 +20,11 @@ debug = true
 grid_size = 7
 metadata/_custom_type_script = "uid://bj7cunb2b4h3h"
 
+[sub_resource type="Resource" id="Resource_lr1cc"]
+script = ExtResource("2_x2mjg")
+grid_size = 9
+metadata/_custom_type_script = "uid://bj7cunb2b4h3h"
+
 [node name="PuzzleProvider" type="Node" unique_id=1897165730]
 script = ExtResource("1_d4gyh")
-_generators = Array[ExtResource("2_x2mjg")]([SubResource("Resource_gl0nk"), SubResource("Resource_y3b73"), SubResource("Resource_8srxi")])
+_generators = Array[ExtResource("2_x2mjg")]([SubResource("Resource_gl0nk"), SubResource("Resource_y3b73"), SubResource("Resource_8srxi"), SubResource("Resource_lr1cc")])

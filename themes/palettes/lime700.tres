@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://dtvpbmgrau4jv"]
+
+[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_65fbo"]
+
+[resource]
+script = ExtResource("1_65fbo")
+name = "Lime 700"
+bg_color = Color(0.6862745, 0.7058824, 0.16862746, 1)
+fg_color = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"

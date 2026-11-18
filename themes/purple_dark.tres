@@ -12,6 +12,8 @@
 [ext_resource type="Resource" uid="uid://cd8g3wdj082iv" path="res://themes/palettes/green500.tres" id="8_vyh76"]
 [ext_resource type="Resource" uid="uid://dc6ye1q1oqnda" path="res://themes/palettes/yellow500.tres" id="9_cslah"]
 [ext_resource type="Resource" uid="uid://c0a5bw2bdryl1" path="res://themes/palettes/orange500.tres" id="10_w7o2r"]
+[ext_resource type="Resource" uid="uid://cgmaynyul83wn" path="res://themes/palettes/brown500.tres" id="11_foijk"]
+[ext_resource type="Resource" uid="uid://b0ydjlub0uqnf" path="res://themes/palettes/blue-gray500.tres" id="12_utw5m"]
 
 [resource]
 script = ExtResource("1_08x23")
@@ -22,5 +24,5 @@ panel_raised_style = ExtResource("2_tuolt")
 panel_accent_style = ExtResource("1_no8k2")
 normal = Color(0.24705882, 0.23529412, 0.2627451, 1)
 selection = Color(0.74, 1, 0.766, 0.49803922)
-regions = Array[ExtResource("3_84ch2")]([ExtResource("4_qatla"), ExtResource("5_tikrk"), ExtResource("6_foijk"), ExtResource("7_utw5m"), ExtResource("8_vyh76"), ExtResource("9_cslah"), ExtResource("10_w7o2r")])
+regions = Array[ExtResource("3_84ch2")]([ExtResource("4_qatla"), ExtResource("5_tikrk"), ExtResource("6_foijk"), ExtResource("7_utw5m"), ExtResource("8_vyh76"), ExtResource("9_cslah"), ExtResource("10_w7o2r"), ExtResource("11_foijk"), ExtResource("12_utw5m")])
 metadata/_custom_type_script = "uid://yy2lugkcy2wv"

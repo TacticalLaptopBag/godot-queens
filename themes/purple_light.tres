@@ -12,6 +12,8 @@
 [ext_resource type="Resource" uid="uid://c8psrtj634gfc" path="res://themes/palettes/green800.tres" id="8_46lhu"]
 [ext_resource type="Resource" uid="uid://cgmaynyul83wn" path="res://themes/palettes/brown500.tres" id="9_uh018"]
 [ext_resource type="Resource" uid="uid://ckw4vvcbub46i" path="res://themes/palettes/orange700.tres" id="10_k0om8"]
+[ext_resource type="Resource" uid="uid://dtvpbmgrau4jv" path="res://themes/palettes/lime700.tres" id="11_nivmu"]
+[ext_resource type="Resource" uid="uid://b3fkkb1tgd5qj" path="res://themes/palettes/blue-gray600.tres" id="12_nivmu"]
 
 [resource]
 script = ExtResource("1_uo8tp")
@@ -21,8 +23,6 @@ ui_theme = ExtResource("2_s5vpt")
 panel_raised_style = ExtResource("2_ljlij")
 panel_accent_style = ExtResource("1_bls4e")
 normal = Color(0.88235295, 0.85882354, 0.8901961, 1)
-mark = Color(1, 1, 1, 1)
-crown = Color(1, 1, 1, 1)
 selection = Color(0.47790003, 0.81, 0.51110995, 0.49803922)
-regions = Array[ExtResource("3_hppvt")]([ExtResource("4_hppvt"), ExtResource("5_b53he"), ExtResource("6_nivmu"), ExtResource("7_e3vvj"), ExtResource("8_46lhu"), ExtResource("9_uh018"), ExtResource("10_k0om8")])
+regions = Array[ExtResource("3_hppvt")]([ExtResource("4_hppvt"), ExtResource("5_b53he"), ExtResource("6_nivmu"), ExtResource("7_e3vvj"), ExtResource("8_46lhu"), ExtResource("9_uh018"), ExtResource("10_k0om8"), ExtResource("11_nivmu"), ExtResource("12_nivmu")])
 metadata/_custom_type_script = "uid://yy2lugkcy2wv"
