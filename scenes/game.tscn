@@ -109,6 +109,54 @@ mouse_filter = 2
 theme = ExtResource("2_ca42v")
 script = ExtResource("3_rysoc")
 
+[node name="Menu Button" type="Button" parent="UICanvasLayer/UI" unique_id=644274769]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 28.0
+offset_right = 84.0
+offset_bottom = 84.0
+focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Undo")
+focus_neighbor_right = NodePath("../Theme Switch")
+focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
+icon = ExtResource("2_ir15t")
+script = ExtResource("3_trtic")
+
+[node name="Help Button" type="Button" parent="UICanvasLayer/UI" unique_id=365475916 node_paths=PackedStringArray("show_control")]
+layout_mode = 1
+offset_left = 120.0
+offset_top = 28.0
+offset_right = 200.0
+offset_bottom = 96.0
+focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Undo")
+focus_neighbor_right = NodePath("../Theme Switch")
+focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
+icon = ExtResource("6_suyxu")
+script = ExtResource("6_sww3w")
+show_control = NodePath("../BoardUI/MarginContainer/DialogContainer/Manual")
+
+[node name="Theme Switch" parent="UICanvasLayer/UI" unique_id=1268724542 instance=ExtResource("6_ssvqc")]
+layout_mode = 1
+focus_neighbor_left = NodePath("../Menu Button")
+focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Vibrate Toggle")
+focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
+
+[node name="Colorblind Switch" type="Button" parent="UICanvasLayer/UI" unique_id=295721504]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 28.0
+offset_right = -120.0
+offset_bottom = 96.0
+grow_horizontal = 0
+focus_neighbor_left = NodePath("../Menu Button")
+focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Vibrate Toggle")
+focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
+icon = ExtResource("31_js0lu")
+script = ExtResource("30_v2yb1")
+off_icon = ExtResource("29_wljb1")
+
 [node name="BoardUI" type="Control" parent="UICanvasLayer/UI" unique_id=1313506943]
 layout_mode = 1
 anchors_preset = 15
@@ -136,6 +184,7 @@ theme_override_constants/margin_bottom = 24
 [node name="TopRow" type="MarginContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=1857705121]
 layout_mode = 2
 size_flags_vertical = 0
+mouse_filter = 2
 theme_override_constants/margin_top = 38
 
 [node name="Time" type="Label" parent="UICanvasLayer/UI/BoardUI/MarginContainer/TopRow" unique_id=1947271793]
@@ -298,54 +347,6 @@ visible = false
 custom_minimum_size = Vector2(450, 650)
 layout_mode = 2
 hide_on_visible = NodePath("../../../../Help Button")
-
-[node name="Menu Button" type="Button" parent="UICanvasLayer/UI" unique_id=644274769]
-layout_mode = 1
-offset_left = 28.0
-offset_top = 28.0
-offset_right = 84.0
-offset_bottom = 84.0
-focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Undo")
-focus_neighbor_right = NodePath("../Theme Switch")
-focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
-icon = ExtResource("2_ir15t")
-script = ExtResource("3_trtic")
-
-[node name="Help Button" type="Button" parent="UICanvasLayer/UI" unique_id=365475916 node_paths=PackedStringArray("show_control")]
-layout_mode = 1
-offset_left = 120.0
-offset_top = 28.0
-offset_right = 200.0
-offset_bottom = 96.0
-focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Undo")
-focus_neighbor_right = NodePath("../Theme Switch")
-focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
-icon = ExtResource("6_suyxu")
-script = ExtResource("6_sww3w")
-show_control = NodePath("../BoardUI/MarginContainer/DialogContainer/Manual")
-
-[node name="Theme Switch" parent="UICanvasLayer/UI" unique_id=1268724542 instance=ExtResource("6_ssvqc")]
-layout_mode = 1
-focus_neighbor_left = NodePath("../Menu Button")
-focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Vibrate Toggle")
-focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
-
-[node name="Colorblind Switch" type="Button" parent="UICanvasLayer/UI" unique_id=295721504]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_top = 28.0
-offset_right = -120.0
-offset_bottom = 96.0
-grow_horizontal = 0
-focus_neighbor_left = NodePath("../Menu Button")
-focus_neighbor_top = NodePath("../BoardUI/MarginContainer/BottomRow/Vibrate Toggle")
-focus_neighbor_bottom = NodePath("../BoardUI/MarginContainer/Selector")
-icon = ExtResource("31_js0lu")
-script = ExtResource("30_v2yb1")
-off_icon = ExtResource("29_wljb1")
 
 [node name="ConfettiParticles" parent="." unique_id=667145340 instance=ExtResource("6_p57ef")]
 position = Vector2(0, 360)
