@@ -54,7 +54,7 @@ alignment = 1
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Your objective is to place a crown in each region on the board. Every puzzle has one unique solution that is quaranteed to be solvable.
+text = "Your objective is to place a crown in each region on the board. Every puzzle has one unique solution that is guaranteed to be solvable.
 
 There are three rules you must follow while filling the board:
 

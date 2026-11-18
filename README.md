@@ -13,7 +13,7 @@ Code based on [Tango.gd][tango.gd].
 ## How to Play
 
 Your objective is to place a crown in each region on the board.
-Every puzzle has one unique solution that is quaranteed to be solvable.
+Every puzzle has one unique solution that is guaranteed to be solvable.
 
 There are three rules you must follow while filling the board, as shown below.
 
