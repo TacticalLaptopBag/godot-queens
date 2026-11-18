@@ -94,6 +94,8 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 
 
 func _on_long_press_timer_timeout():
+	if _drag_started:
+		return
 	_long_press_occurred = true
 	toggle_crown_tile()
 	long_press_haptics.vibrate()

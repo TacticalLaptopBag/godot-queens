@@ -71,7 +71,7 @@ z_index = 1
 shape = SubResource("RectangleShape2D_gtpg2")
 
 [node name="LongPressTimer" type="Timer" parent="." unique_id=421255309]
-wait_time = 0.4
+wait_time = 0.333
 one_shot = true
 
 [node name="InvalidTimer" type="Timer" parent="." unique_id=1967438548]
