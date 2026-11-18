@@ -20,6 +20,8 @@
 [ext_resource type="Script" uid="uid://cst7k2yr77w6t" path="res://src/ui_init.gd" id="11_1kice"]
 [ext_resource type="Texture2D" uid="uid://d1sc44drlq2db" path="res://img/crown_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="11_ca42v"]
 [ext_resource type="PackedScene" uid="uid://c06aql8tn7la" path="res://scenes/grid_options.tscn" id="11_trtic"]
+[ext_resource type="Texture2D" uid="uid://gug74e3ngfj6" path="res://img/delete_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="14_bhx41"]
+[ext_resource type="Script" uid="uid://bu6ayebyy6rek" path="res://src/reset_button.gd" id="15_qnb83"]
 [ext_resource type="Script" uid="uid://bj8yi5w3ycoms" path="res://src/scoreboard.gd" id="16_pl11u"]
 [ext_resource type="PackedScene" uid="uid://baxxwm7mikvat" path="res://scenes/scoreboard_row.tscn" id="17_bhx41"]
 [ext_resource type="Script" uid="uid://be2h3iuojs1he" path="res://src/focus_on_visible.gd" id="18_5newe"]
@@ -37,11 +39,23 @@ func _on_board_puzzle_changed() -> void:
 	visible = true
 "
 
-[sub_resource type="InputEventAction" id="InputEventAction_264po"]
+[sub_resource type="InputEventAction" id="InputEventAction_qnb83"]
 action = &"undo"
+
+[sub_resource type="Shortcut" id="Shortcut_sww3w"]
+events = [SubResource("InputEventAction_qnb83")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_264po"]
+action = &"clear"
 
 [sub_resource type="Shortcut" id="Shortcut_1kice"]
 events = [SubResource("InputEventAction_264po")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_bhx41"]
+action = &"new_game"
+
+[sub_resource type="Shortcut" id="Shortcut_qnb83"]
+events = [SubResource("InputEventAction_bhx41")]
 
 [sub_resource type="GDScript" id="GDScript_gee14"]
 script/source = "extends PanelContainer
@@ -170,12 +184,25 @@ script = SubResource("GDScript_u5sy4")
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+tooltip_text = "Undo"
+focus_neighbor_top = NodePath("../../Selector")
+focus_neighbor_right = NodePath("../Vibrate Toggle")
+focus_neighbor_bottom = NodePath("../../../../Menu Button")
+shortcut = SubResource("Shortcut_sww3w")
+icon = ExtResource("2_iywne")
+script = ExtResource("2_lnu2h")
+
+[node name="Reset" type="Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" unique_id=619963041]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "Clear"
 focus_neighbor_top = NodePath("../../Selector")
 focus_neighbor_right = NodePath("../Vibrate Toggle")
 focus_neighbor_bottom = NodePath("../../../../Menu Button")
 shortcut = SubResource("Shortcut_1kice")
-icon = ExtResource("2_iywne")
-script = ExtResource("2_lnu2h")
+icon = ExtResource("14_bhx41")
+script = ExtResource("15_qnb83")
 
 [node name="Vibrate Toggle" parent="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" unique_id=1938221906 instance=ExtResource("10_trtic")]
 layout_mode = 2
@@ -183,11 +210,24 @@ focus_neighbor_left = NodePath("../Undo")
 focus_neighbor_top = NodePath("../../Selector")
 focus_neighbor_bottom = NodePath("../../../../Theme Switch")
 
+[node name="New" type="Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" unique_id=819676757]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "New"
+focus_neighbor_top = NodePath("../../Selector")
+focus_neighbor_right = NodePath("../Vibrate Toggle")
+focus_neighbor_bottom = NodePath("../../../../Menu Button")
+shortcut = SubResource("Shortcut_qnb83")
+icon = ExtResource("4_p57ef")
+script = ExtResource("1_yqjtg")
+
 [node name="DialogContainer" type="CenterContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=712856594]
 layout_mode = 2
 mouse_filter = 2
 
 [node name="VictoryDialog" type="PanelContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer" unique_id=1360370872 node_paths=PackedStringArray("time_label")]
+visible = false
 layout_mode = 2
 script = SubResource("GDScript_gee14")
 time_label = NodePath("MarginContainer/VBoxContainer/Content")

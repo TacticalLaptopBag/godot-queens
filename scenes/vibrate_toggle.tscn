@@ -7,6 +7,7 @@
 [node name="Vibrate Toggle" type="Button" unique_id=875830177]
 offset_right = 56.0
 offset_bottom = 56.0
+tooltip_text = "Toggle Haptics"
 icon = ExtResource("1_3e1lx")
 script = ExtResource("2_3e1lx")
 vibrate_off_icon = ExtResource("2_y5w7u")

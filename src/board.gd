@@ -117,3 +117,12 @@ func undo():
 	
 	undoing = true
 	change.cell.type = change.old_type
+
+
+func clear():
+	changes.clear()
+	for tile in tiles:
+		if tile.cell.type == Cell.Type.EMPTY:
+			continue
+		undoing = true
+		tile.cell.type = Cell.Type.EMPTY
