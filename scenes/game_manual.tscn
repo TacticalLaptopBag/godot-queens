@@ -44,26 +44,27 @@ hide_control = NodePath("../../../..")
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=612051722]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1923875093]
 layout_mode = 2
 alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1266612497]
-custom_minimum_size = Vector2(426, 0)
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Your objective is to place a crown in each region on the board. Every puzzle has one unique solution that in quaranteed to be solvable.
+text = "Your objective is to place a crown in each region on the board. Every puzzle has one unique solution that is quaranteed to be solvable.
 
 There are three rules you must follow while filling the board:
 
-Rule 1: One crown per row and column
+Rule 1: One crown per row and column.
 Each row can only have one crown, and each column can only have one crown.
 
-Rule 2: One crown per region
+Rule 2: One crown per region.
 Every region must contain only one crown. Cells in the same region are colored the same.
 
-Rule 3: No adjacent crowns
+Rule 3: No adjacent crowns.
 Crowns cannot be adjacent to one another. Not even diagonally.
 
 Click or tap on a cell to mark it. This tells you where crowns cannot be placed. Click or tap a marked cell to turn it into a crown. All adjacent cells, and cells in the same column and row, will automatically be marked."
