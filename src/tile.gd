@@ -53,6 +53,7 @@ func _update_selected_appearance():
 
 
 var _drag_started := false
+var _long_press_occurred := false
 
 func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if cell.locked:
@@ -63,14 +64,16 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				long_press_timer.start()
 				_drag_started = false
+				_long_press_occurred = false
 		elif event.is_released():
 			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				long_press_timer.stop()
-				if not _drag_started:
-					# No drag occurred, this was a click
+				if not _drag_started and not _long_press_occurred:
+					# No drag occurred and no long press, this was a click
 					toggle_tile_type()
 					tap_haptics.vibrate()
 				_drag_started = false
+				_long_press_occurred = false
 			elif event.button_index == MouseButton.MOUSE_BUTTON_RIGHT:
 				toggle_crown_tile()
 			elif event.button_index == MouseButton.MOUSE_BUTTON_MIDDLE:
@@ -90,6 +93,7 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 
 
 func _on_long_press_timer_timeout():
+	_long_press_occurred = true
 	toggle_crown_tile()
 	long_press_haptics.vibrate()
 
