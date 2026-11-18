@@ -258,6 +258,7 @@ focus_neighbor_bottom = NodePath("../../../../Menu Button")
 shortcut = SubResource("Shortcut_qnb83")
 icon = ExtResource("4_p57ef")
 script = ExtResource("1_yqjtg")
+resume_in_progress = false
 
 [node name="DialogContainer" type="CenterContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=712856594]
 layout_mode = 2
@@ -332,6 +333,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 icon = ExtResource("4_p57ef")
 script = ExtResource("1_yqjtg")
+resume_in_progress = false
 
 [node name="Focus On Visible" type="Node" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/Action Buttons/New Game" unique_id=1846849195]
 script = ExtResource("18_5newe")
