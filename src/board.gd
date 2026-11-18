@@ -83,6 +83,8 @@ func _update_state():
 			
 		end_ticks = Time.get_ticks_msec()
 		puzzle_completed.emit(start_ticks, end_ticks)
+		# Clean up in-progress on completion
+		DataPersistence.delete_in_progress_puzzle(grid_size)
 
 
 func _update_bounding_box():
@@ -99,6 +101,8 @@ func _on_cell_type_changed(cell: Cell, old_type: Cell.Type):
 	if not undoing:
 		var change := Change.new(cell, old_type, cell.type)
 		changes.push_back(change)
+		# Save in-progress on every cell change
+		DataPersistence.save_in_progress_puzzle(puzzle)
 	else:
 		undoing = false
 	cell_type_changed.emit(cell, old_type)
