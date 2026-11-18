@@ -76,15 +76,15 @@ func _update_state():
 	validating = true
 	var is_valid := puzzle.validate()
 	validating = false
-	if is_valid and puzzle.has_all_crowns_placed():
+	if is_valid and puzzle.has_all_crowns_placed() and end_ticks == -1:
 		print("you're winner!")
 		for cell in puzzle.cells:
 			cell.locked = true
 			
 		end_ticks = Time.get_ticks_msec()
-		puzzle_completed.emit(start_ticks, end_ticks)
-		# Clean up in-progress on completion
+		# Clean up in-progress on completion before emitting
 		DataPersistence.delete_in_progress_puzzle(grid_size)
+		puzzle_completed.emit(start_ticks, end_ticks)
 
 
 func _update_bounding_box():
@@ -101,8 +101,9 @@ func _on_cell_type_changed(cell: Cell, old_type: Cell.Type):
 	if not undoing:
 		var change := Change.new(cell, old_type, cell.type)
 		changes.push_back(change)
-		# Save in-progress on every cell change
-		DataPersistence.save_in_progress_puzzle(puzzle)
+		# Save in-progress on every cell change, but not after completion
+		if end_ticks == -1:
+			DataPersistence.save_in_progress_puzzle(puzzle)
 	else:
 		undoing = false
 	cell_type_changed.emit(cell, old_type)
