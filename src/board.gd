@@ -126,3 +126,8 @@ func clear():
 			continue
 		undoing = true
 		tile.cell.type = Cell.Type.EMPTY
+
+
+func update_appearance():
+	for tile in tiles:
+		tile.update_appearance()

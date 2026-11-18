@@ -53,7 +53,6 @@ No AI was used in the creation of assets.
 ## TODO:
 - [ ] Save state of currently in-progress puzzle
 - [ ] Test controller support
-- [ ] Colorblind support
 
 
 [queens]: https://www.linkedin.com/games/queens/

@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bvjm1siy2l8gy" path="res://img/crown/close.svg" id="5_jm5cm"]
 [ext_resource type="Texture2D" uid="uid://x20sbp2qtoqp" path="res://img/crown/crown.svg" id="6_vknvr"]
 [ext_resource type="Texture2D" uid="uid://blmggj33yb62s" path="res://img/crown/warning.svg" id="7_jdkp0"]
+[ext_resource type="Texture2D" uid="uid://b33tqjiioesov" path="res://img/colorblind/square_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="8_284l3"]
 
 [sub_resource type="Resource" id="Resource_j3iir"]
 script = ExtResource("3_284l3")
@@ -81,6 +82,11 @@ one_shot = true
 visible = false
 modulate = Color(0.54586667, 0.89, 0.53400004, 1)
 texture = ExtResource("1_j8k5k")
+
+[node name="Colorblind" type="Sprite2D" parent="." unique_id=141642171]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(20, -20)
+texture = ExtResource("8_284l3")
 
 [connection signal="input_event" from="ClickDetector" to="." method="_on_click_detector_input_event"]
 [connection signal="timeout" from="LongPressTimer" to="." method="_on_long_press_timer_timeout"]

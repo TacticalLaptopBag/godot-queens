@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://5xleu3mt0c1d"]
 
+[ext_resource type="Texture2D" uid="uid://b77e7i41u1sve" path="res://img/colorblind/star_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="1_w0git"]
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_xrjuk"]
 
 [resource]
 script = ExtResource("1_xrjuk")
 name = "Teal 700"
 bg_color = Color(0, 0.4745098, 0.41960785, 1)
+colorblind_shape = ExtResource("1_w0git")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

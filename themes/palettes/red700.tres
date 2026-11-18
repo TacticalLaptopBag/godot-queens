@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://dsam33fpw6ff6"]
 
+[ext_resource type="Texture2D" uid="uid://batposxl2adj2" path="res://img/colorblind/square_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="1_edjr5"]
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_ot5w4"]
 
 [resource]
 script = ExtResource("1_ot5w4")
 name = "Red 700"
 bg_color = Color(0.827451, 0.18431373, 0.18431373, 1)
+colorblind_shape = ExtResource("1_edjr5")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

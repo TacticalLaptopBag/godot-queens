@@ -1,10 +1,12 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://ckw4vvcbub46i"]
 
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_3augw"]
+[ext_resource type="Texture2D" uid="uid://bvlueb5on8hwc" path="res://img/colorblind/change_history_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="1_4wai2"]
 
 [resource]
 script = ExtResource("1_3augw")
 name = "Orange 700"
 bg_color = Color(0.9607843, 0.4862745, 0, 1)
 fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("1_4wai2")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

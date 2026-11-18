@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://buajgakbh667i"]
 
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_elwqf"]
+[ext_resource type="Texture2D" uid="uid://c224mm4llsif7" path="res://img/colorblind/change_history_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="1_sk6sr"]
 
 [resource]
 script = ExtResource("1_elwqf")
 name = "Blue 700"
 bg_color = Color(0.09803922, 0.4627451, 0.8235294, 1)
+colorblind_shape = ExtResource("1_sk6sr")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

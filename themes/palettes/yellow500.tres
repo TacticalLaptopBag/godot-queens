@@ -1,10 +1,12 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://dc6ye1q1oqnda"]
 
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_2r5as"]
+[ext_resource type="Texture2D" uid="uid://rumqaleyh7ab" path="res://img/colorblind/circle_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="1_8idun"]
 
 [resource]
 script = ExtResource("1_2r5as")
 name = "Yellow 500"
 bg_color = Color(1, 0.92156863, 0.23137255, 1)
 fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("1_8idun")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

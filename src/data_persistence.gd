@@ -18,6 +18,11 @@ var current_theme: String:
 		return _persistence.data.get_or_add("theme", "Purple (Dark)")
 	set(value):
 		_persistence.data["theme"] = value
+var colorblind: bool:
+	get:
+		return _persistence.data.get_or_add("colorblind", false)
+	set(value):
+		_persistence.data["colorblind"] = value
 
 
 const PUZZLE_FMT := "puzzles_%d"

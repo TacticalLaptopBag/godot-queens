@@ -14,6 +14,7 @@ extends Sprite2D
 @onready var long_press_timer: Timer = $LongPressTimer
 @onready var invalid_timer: Timer = $InvalidTimer
 @onready var selection_indicator: Sprite2D = $SelectionIndicator
+@onready var colorblind_sprite: Sprite2D = $Colorblind
 
 signal cell_type_changed(cell: Cell, old_type: Cell.Type)
 
@@ -41,7 +42,7 @@ func _ready() -> void:
 	ThemeManager.theme_changed.connect(_update_theme)
 
 
-func _update_appearance():
+func update_appearance():
 	_update_type_appearance()
 	_on_cell_locked_changed(cell, cell.locked)
 	_update_selected_appearance()
@@ -130,9 +131,13 @@ func clear_tile():
 
 func _update_color():
 	var region_color := ThemeManager.current_theme.regions[cell.region]
+	fill_sprite.modulate = region_color.bg_color
 	mark.modulate = region_color.fg_color
 	crown.modulate = region_color.fg_color
-	fill_sprite.modulate = region_color.bg_color
+	colorblind_sprite.modulate = region_color.fg_color
+	colorblind_sprite.texture = region_color.colorblind_shape
+	colorblind_sprite.visible = DataPersistence.colorblind
+
 	selection_indicator.modulate = ThemeManager.current_theme.selection
 	self_modulate = ThemeManager.current_theme.normal
 
@@ -192,4 +197,4 @@ func _on_invalid_timer_timeout() -> void:
 func _update_theme(theme: GameTheme):
 	if not is_node_ready(): return
 	if theme == null: return
-	_update_appearance()
+	update_appearance()

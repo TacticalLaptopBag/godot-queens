@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://b0ydjlub0uqnf"]
 
+[ext_resource type="Texture2D" uid="uid://f7n3cbu2pn25" path="res://img/colorblind/close_18dp_FFFFFF_FILL1_wght500_GRAD-25_opsz20.svg" id="1_8an3j"]
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_sfch4"]
 
 [resource]
@@ -7,4 +8,5 @@ script = ExtResource("1_sfch4")
 name = "Blue Gray 500"
 bg_color = Color(0.3764706, 0.49019608, 0.54509807, 1)
 fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("1_8an3j")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

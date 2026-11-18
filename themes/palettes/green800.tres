@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://c8psrtj634gfc"]
 
+[ext_resource type="Texture2D" uid="uid://b33tqjiioesov" path="res://img/colorblind/square_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="1_4ywgb"]
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_j6012"]
 
 [resource]
 script = ExtResource("1_j6012")
 name = "Green 800"
 bg_color = Color(0.18039216, 0.49019608, 0.19607843, 1)
+colorblind_shape = ExtResource("1_4ywgb")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"

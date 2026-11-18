@@ -1,10 +1,12 @@
 [gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://d4kn0waygoe2i"]
 
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_5s4ws"]
+[ext_resource type="Texture2D" uid="uid://dbjaux4s4e0s7" path="res://img/colorblind/circle_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="1_rquyh"]
 
 [resource]
 script = ExtResource("1_5s4ws")
 name = "Purple 300"
 bg_color = Color(0.7294118, 0.40784314, 0.78431374, 1)
 fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("1_rquyh")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"
