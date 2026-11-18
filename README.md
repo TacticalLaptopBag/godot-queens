@@ -1,12 +1,28 @@
 # Queens.gd
 
 The classic LinkedIn puzzle, [Queens][queens], reimplemented in Godot.
+Select from 5x5, 6x6, 7x7, or 9x9 grids.
+Puzzles are randomly generated, and are guaranteed to have a single unique solution.
+
+No internet connection required for standalone builds.
 
 Code based on [Tango.gd][tango.gd].
 
 ## How to Play
 
-TODO
+Your objective is to place a crown in each region on the board.
+Every puzzle has one unique solution that in quaranteed to be solvable.
+
+There are three rules you must follow while filling the board, as shown below.
+
+### Rule 1: One crown per row and column
+Each row can only have one crown, and each column can only have one crown.
+
+### Rule 2: One crown per region
+Every region must contain only one crown. Cells in the same region are colored the same.
+
+### Rule 3: No adjacent crowns
+Crowns cannot be adjacent to one another. Not even diagonally.
 
 ## Controls
 
