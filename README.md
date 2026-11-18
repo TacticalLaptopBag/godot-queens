@@ -6,6 +6,8 @@ Puzzles are randomly generated, and are guaranteed to have a single unique solut
 
 No internet connection required for standalone builds.
 
+Don't want to download? Play in your web browser on [itch.io][itch]
+
 Code based on [Tango.gd][tango.gd].
 
 ## How to Play
@@ -72,4 +74,4 @@ No AI was used in the creation of assets.
 
 [queens]: https://www.linkedin.com/games/queens/
 [tango.gd]: https://github.com/TacticalLaptopBag/godot-tango
-[itch]: https://tacticallaptopbag.itch.io/tango
+[itch]: https://tacticallaptopbag.itch.io/queens
