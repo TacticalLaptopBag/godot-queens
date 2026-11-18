@@ -50,6 +50,12 @@ Claude Sonnet 5.5 was used to create the puzzle generator.
 No AI was used in the creation of assets.
 
 
+## TODO:
+- [ ] Save state of currently in-progress puzzle
+- [ ] Test controller support
+- [ ] Add in-game game manual
+
+
 [queens]: https://www.linkedin.com/games/queens/
 [tango.gd]: https://github.com/TacticalLaptopBag/godot-tango
 [itch]: https://tacticallaptopbag.itch.io/tango
