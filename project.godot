@@ -17,7 +17,7 @@ config/use_custom_user_dir=true
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "Mobile")
 boot_splash/bg_color=Color(0.078431375, 0.07058824, 0.09411765, 1)
-config/icon="res://icon.svg"
+config/icon="uid://t6h3s1cv2m2k"
 
 [autoload]
 
