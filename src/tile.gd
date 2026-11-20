@@ -5,16 +5,19 @@ extends Sprite2D
 @export var tap_haptics := HapticConfig.new()
 @export var long_press_haptics := HapticConfig.new()
 @export var invalid_haptics := HapticConfig.new()
+@export var long_press_time := 1.0 / 3.0
 
 @onready var mark: Sprite2D = $Mark
 @onready var crown: Sprite2D = $Crown
 @onready var fill_sprite: Sprite2D = $Fill
 @onready var invalid_sprite: Sprite2D = $Invalid
 @onready var click_detector: Area2D = $ClickDetector
-@onready var long_press_timer: Timer = $LongPressTimer
 @onready var invalid_timer: Timer = $InvalidTimer
 @onready var selection_indicator: Sprite2D = $SelectionIndicator
 @onready var colorblind_sprite: Sprite2D = $Colorblind
+
+static var _long_press_timer: SceneTreeTimer
+static var _long_press_tile: Tile
 
 signal cell_type_changed(cell: Cell, old_type: Cell.Type)
 
@@ -56,6 +59,25 @@ func _update_selected_appearance():
 var _drag_started := false
 var _long_press_occurred := false
 
+
+func _start_long_press_timer():
+	if _long_press_tile != null:
+		_stop_long_press_timer()
+
+	_long_press_timer = get_tree().create_timer(long_press_time)
+	_long_press_tile = self
+	_long_press_timer.timeout.connect(_on_long_press_timer_timeout)
+
+
+func _stop_long_press_timer():
+	if _long_press_timer == null:
+		return
+
+	_long_press_timer.timeout.disconnect(_on_long_press_timer_timeout)
+	_long_press_timer = null
+	_long_press_tile = null
+
+
 func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if cell.locked:
 		return
@@ -63,12 +85,12 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 	if event is InputEventMouseButton:
 		if event.is_pressed():
 			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-				long_press_timer.start()
+				_start_long_press_timer()
 				_drag_started = false
 				_long_press_occurred = false
 		elif event.is_released():
 			if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-				long_press_timer.stop()
+				_stop_long_press_timer()
 				if not _drag_started and not _long_press_occurred:
 					# No drag occurred and no long press, this was a click
 					toggle_tile_type()
@@ -85,8 +107,7 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 			_drag_started = true
 			# Mark cells as we drag over them
 			# Stop long press timer to prevent crown toggle
-			if not long_press_timer.is_stopped():
-				long_press_timer.stop()
+			_stop_long_press_timer()
 			# Only set to MARK if empty, don't toggle to crown
 			if cell.type == Cell.Type.EMPTY:
 				cell.type = Cell.Type.MARK
@@ -94,6 +115,11 @@ func _on_click_detector_input_event(_viewport: Node, event: InputEvent, _shape_i
 
 
 func _on_long_press_timer_timeout():
+	if _long_press_tile != self:
+		return
+	_long_press_tile = null
+	_long_press_timer = null
+
 	if _drag_started:
 		return
 	_long_press_occurred = true

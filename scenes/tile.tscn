@@ -70,10 +70,6 @@ z_index = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ClickDetector" unique_id=907866706]
 shape = SubResource("RectangleShape2D_gtpg2")
 
-[node name="LongPressTimer" type="Timer" parent="." unique_id=421255309]
-wait_time = 0.333
-one_shot = true
-
 [node name="InvalidTimer" type="Timer" parent="." unique_id=1967438548]
 wait_time = 0.333
 one_shot = true
@@ -89,5 +85,4 @@ position = Vector2(20, -20)
 texture = ExtResource("8_284l3")
 
 [connection signal="input_event" from="ClickDetector" to="." method="_on_click_detector_input_event"]
-[connection signal="timeout" from="LongPressTimer" to="." method="_on_long_press_timer_timeout"]
 [connection signal="timeout" from="InvalidTimer" to="." method="_on_invalid_timer_timeout"]
