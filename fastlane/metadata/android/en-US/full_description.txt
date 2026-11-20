@@ -1,0 +1,31 @@
+Queens.gd is a logic puzzle game inspired by LinkedIn's Queens puzzle.
+
+Your objective is to place a crown in each region on the board.
+Every puzzle has one unique solution that is guaranteed to be solvable.
+
+<big>Rules:</big>
+<ol>
+  <li>One crown per row and column</li>
+  <li>One crown per region</li>
+  <li>No adjacent crowns (not even diagonally)</li>
+</ol>
+
+Select from 5x5, 6x6, 7x7, or 9x9 grids. Puzzles are randomly generated on-device.
+No internet connection required.
+
+Source code available at https://github.com/TacticalLaptopBag/godot-queens
+Licensed under GPL v3.
+
+
+<big>AI Usage Disclaimer</big>
+
+The following local language models were used for <b>code assistance</b>:
+<ul>
+  <li>google/gemma-4-31b-qat</li>
+  <li>meta/muse-glimmer</li>
+</ul>
+
+Claude Sonnet 5.5 was used to create the puzzle generator.
+
+<b>No AI was used in the creation of assets.</b>
+
