@@ -1,11 +1,10 @@
 # Queens.gd - AGENTS.md
 
 ## Project Overview
-2D Godot puzzle game originally cloned from LinkedIn's Tango puzzle. Currently in mid-conversion to Queens clone. Godot 4.7, mobile-focused with desktop support.
+2D Godot puzzle game based on LinkedIn's Queens puzzle. Godot 4.7, mobile-focused with desktop support.
 
-**Original**: Tango puzzle (Sun/Moon with constraints)
-**Target**: Queens clone (regions, crowns, marks)
-**Status**: Bare minimal conversion complete (commit 3a5fece), many dangling wires
+**Game**: Queens clone (regions, crowns, marks)
+**Status**: Fully functional (commit 42df301, Nov 20 2026)
 
 ## Project Structure
 
@@ -47,9 +46,9 @@ Cell resource with:
 Manages grid of Cells:
 - `_populate(size)` creates cells and links neighbors
 - `validate()` checks rules and marks invalid cells
-- `_find_invalid_lines()` checks row/column balance (MARK vs CROWN count)
+- `_find_crowns_per_row()`, `_find_crowns_per_column()`, `_find_crowns_per_region()`, `_find_touching_crowns()` validate Queens rules
 - `get_problem_cells()` aggregates validation issues
-- **Dangling**: Calls `cell.has_three_in_a_row()` and `cell.has_illegal_neighbors()` which no longer exist
+- `update_auto_marks()` marks cells that cannot contain crowns
 
 ### src/tile.gd
 Visual representation:
@@ -62,8 +61,9 @@ Visual representation:
 ### src/puzzle_generator.gd
 Async generation using WorkerThreadPool:
 - Pool size: 10 puzzles
-- Currently **stubbed**: `_generate_puzzle()` only creates empty grid, TODO comments for region/crown generation
-- Missing: Actual Crowns generation logic
+- Generates valid Queens puzzles with unique solutions
+- Uses backtracking with repair algorithm for uniqueness
+- Region growing algorithm ensures connected regions
 
 ### src/board.gd
 Main game controller:
@@ -74,58 +74,45 @@ Main game controller:
 
 ## Conversion Status
 
-### Completed (commit 3a5fece "Bare minimal conversion")
-- Cell.Type changed: SUN/MOON → MARK/AUTO_MARK/CROWN
-- Removed Constraint system (EQUAL/OPPOSITE)
-- Removed puzzle_solver.gd
-- Added region property to Cell
+### Completed
+- Cell.Type: MARK/AUTO_MARK/CROWN (SUN/MOON removed)
+- Constraint system removed (EQUAL/OPPOSITE)
+- Region system implemented with connected regions
 - Direction enum expanded to 8 directions
-- Tile visuals updated for Crowns
-- GameTheme updated (sun/moon → mark/crown)
+- Puzzle generation with unique solution guarantee
+- Region validation (one crown per region)
+- Adjacent crown validation (no touching)
+- Row/column validation (one crown per row/column)
+- Auto-marking for same row/column/region/adjacent cells
+- 5x5, 6x6, 7x7, 9x9 grid sizes supported
+- Persistence for puzzles, scores, and in-progress games
+- Theme system with colorblind support
+- Haptic feedback support
+- Multi-platform input (mouse, keyboard, gamepad)
+- Backup/restore functionality
+- Fastlane metadata for F-Droid
 
-### Dangling / Broken
-1. **Missing Cell methods**:
-   - `has_three_in_a_row()` - referenced in puzzle.gd:82
-   - `has_illegal_neighbors()` - referenced in puzzle.gd:75
-   - Constraint properties: north_constraint, east_constraint, south_constraint, west_constraint
-   - Constraint enum and methods
+### Current Features
+1. **Puzzle generation**: Async generation using WorkerThreadPool with uniqueness validation
+2. **Validation**: Complete Queens rules implemented
+3. **Persistence**: v1 format, serializes cell type, invalid flag, and region
+4. **UI**: Region colors, selection indicators, invalid cell highlighting
+5. **Gameplay**: Mark/Crown toggling, auto-marks, undo, clear, drag to mark
 
-2. **Persistence mismatch**:
-   - `data_persistence.gd` serializes/deserializes constraint properties
-   - Cells no longer have these properties
-   - Format v2 still expects constraints
+## Game Rules (Queens)
 
-3. **Generation stub**:
-   - `puzzle_generator.gd::_generate_puzzle()` returns empty grid only
-   - No region generation
-   - No crown placement logic
-   - No validation/solving
+Based on LinkedIn's Queens puzzle:
 
-4. **Validation incomplete**:
-   - Only checks row/column balance
-   - Missing Crowns-specific rules:
-     - Region constraints (crowns per region?)
-     - Adjacent crown rules
-     - Three-in-a-row prevention
+1. **One crown per row and column**: Each row can only have one crown, and each column can only have one crown
+2. **One crown per region**: Every region must contain only one crown. Cells in the same region are colored the same
+3. **No adjacent crowns**: Crowns cannot be adjacent to one another. Not even diagonally
 
-## Game Rules (Expected for Crowns)
-
-Based on conversion context, Crowns likely involves:
-- Grid with regions
-- Place crowns in each region according to rules
-- Marks indicate something (maybe region boundaries?)
-- No three in a row of same type
-- Balance constraints per row/column
-
-**Current rules implemented**:
-- Row/column must have equal MARK/CROWN count
-- Cells can be EMPTY/MARK/CROWN
-- Visual feedback for invalid cells
-
-**Missing rules**:
-- Region validation
-- Adjacent crown constraints
-- Puzzle generation with guaranteed solution
+**Rules implemented**:
+- Row/column validation (one crown per row/column)
+- Region validation (one crown per region)
+- Adjacent crown validation (no touching)
+- Auto-marking for cells that cannot contain crowns
+- Unique solution guarantee via backtracking and repair algorithm
 
 ## Autoloads (project.godot)
 - DataPersistence
@@ -149,20 +136,15 @@ Based on conversion context, Crowns likely involves:
 - HapticConfig for vibration
 
 ## Known Issues
-1. Puzzle generation returns empty grids
-2. Deserialization fails for old puzzles with constraints
-3. Validation incomplete for Crowns rules
-4. No region visualization
-5. Scoreboard works but puzzles never complete properly
+1. Long press timer is Tile-level (may cause issues with drag)
+2. ControllerIcons addon uninstalled but input actions still reference it
+3. No automated tests
 
 ## Working Directory
-- /home/shamilton/dev/godot-crowns
-- Git repo with history showing Tango → Crowns conversion
+- Git repo: TacticalLaptopBag/godot-queens
+- Current commit: 42df301 (Fix long press interfering with drag)
 
 ## Next Steps
-1. Implement Queens puzzle generation
-2. Define region system
-3. Implement proper validation rules
-4. Fix persistence compatibility
-5. Update data_persistence serialization
-6. Add region visualization to tiles
+1. Test controller support
+2. Consider moving long press timer to Board level for better drag handling
+3. Add automated tests
