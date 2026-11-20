@@ -1,0 +1,4 @@
+* Fixed long press taps interfering with drags
+* Fixed in-game manual not following theme
+* Reduced application size
+* Shifted top buttons down to avoid rounded corners
