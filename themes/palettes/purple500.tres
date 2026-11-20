@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="GameThemeRegion" format=3 uid="uid://cnyivxqnwnwal"]
-
-[ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="1_4ju0r"]
-
-[resource]
-script = ExtResource("1_4ju0r")
-name = "Purple 500"
-bg_color = Color(0.6117647, 0.15294118, 0.6901961, 1)
-metadata/_custom_type_script = "uid://r6mty4ahoc0a"

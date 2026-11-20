@@ -5,15 +5,86 @@
 [ext_resource type="Theme" uid="uid://cvb3w225i6ntw" path="res://material3/dark/material-theme-dark.tres" id="2_6188t"]
 [ext_resource type="StyleBox" uid="uid://bwrqgrxjsogyi" path="res://material3/dark/panel_raised_1.tres" id="2_tuolt"]
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="3_84ch2"]
-[ext_resource type="Resource" uid="uid://ce8gky6j7ne16" path="res://themes/palettes/red500.tres" id="4_qatla"]
-[ext_resource type="Resource" uid="uid://d4kn0waygoe2i" path="res://themes/palettes/purple300.tres" id="5_tikrk"]
-[ext_resource type="Resource" uid="uid://dr5rxxr558adc" path="res://themes/palettes/blue500.tres" id="6_foijk"]
-[ext_resource type="Resource" uid="uid://c5du703ddevmv" path="res://themes/palettes/teal500.tres" id="7_utw5m"]
-[ext_resource type="Resource" uid="uid://cd8g3wdj082iv" path="res://themes/palettes/green500.tres" id="8_vyh76"]
-[ext_resource type="Resource" uid="uid://dc6ye1q1oqnda" path="res://themes/palettes/yellow500.tres" id="9_cslah"]
-[ext_resource type="Resource" uid="uid://c0a5bw2bdryl1" path="res://themes/palettes/orange500.tres" id="10_w7o2r"]
-[ext_resource type="Resource" uid="uid://cgmaynyul83wn" path="res://themes/palettes/brown500.tres" id="11_foijk"]
-[ext_resource type="Resource" uid="uid://b0ydjlub0uqnf" path="res://themes/palettes/blue-gray500.tres" id="12_utw5m"]
+[ext_resource type="Texture2D" uid="uid://batposxl2adj2" path="res://img/colorblind/square_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="4_foijk"]
+[ext_resource type="Texture2D" uid="uid://dbjaux4s4e0s7" path="res://img/colorblind/circle_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="5_utw5m"]
+[ext_resource type="Texture2D" uid="uid://c224mm4llsif7" path="res://img/colorblind/change_history_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="6_vyh76"]
+[ext_resource type="Texture2D" uid="uid://b77e7i41u1sve" path="res://img/colorblind/star_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="7_cslah"]
+[ext_resource type="Texture2D" uid="uid://b33tqjiioesov" path="res://img/colorblind/square_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="8_w7o2r"]
+[ext_resource type="Texture2D" uid="uid://rumqaleyh7ab" path="res://img/colorblind/circle_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="9_euan6"]
+[ext_resource type="Texture2D" uid="uid://bvlueb5on8hwc" path="res://img/colorblind/change_history_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="10_lt0io"]
+[ext_resource type="Texture2D" uid="uid://lfdk3a1ity5d" path="res://img/colorblind/star_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="11_gu6xf"]
+[ext_resource type="Texture2D" uid="uid://biaqqm6jadi2e" path="res://img/colorblind/add_18dp_FFFFFF_FILL1_wght500_GRAD-25_opsz20.svg" id="12_foijk"]
+
+[sub_resource type="Resource" id="Resource_lhj6e"]
+script = ExtResource("3_84ch2")
+name = "Red 500"
+bg_color = Color(0.95686275, 0.2627451, 0.21176471, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("4_foijk")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_05k0q"]
+script = ExtResource("3_84ch2")
+name = "Purple 300"
+bg_color = Color(0.7294118, 0.40784314, 0.78431374, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("5_utw5m")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_84ch2"]
+script = ExtResource("3_84ch2")
+name = "Blue 500"
+bg_color = Color(0.12941177, 0.5882353, 0.9529412, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("6_vyh76")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_ighqu"]
+script = ExtResource("3_84ch2")
+name = "Teal 500"
+bg_color = Color(0, 0.5882353, 0.53333336, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("7_cslah")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_jp6wh"]
+script = ExtResource("3_84ch2")
+name = "Green 500"
+bg_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("8_w7o2r")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_1rr0o"]
+script = ExtResource("3_84ch2")
+name = "Yellow 500"
+bg_color = Color(1, 0.92156863, 0.23137255, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("9_euan6")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_fwv60"]
+script = ExtResource("3_84ch2")
+name = "Orange 500"
+bg_color = Color(1, 0.59607846, 0, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("10_lt0io")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_15o8u"]
+script = ExtResource("3_84ch2")
+name = "Brown 500"
+bg_color = Color(0.4745098, 0.33333334, 0.28235295, 1)
+colorblind_shape = ExtResource("11_gu6xf")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_nsgc2"]
+script = ExtResource("3_84ch2")
+name = "Blue Gray 500"
+bg_color = Color(0.3764706, 0.49019608, 0.54509807, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("12_foijk")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
 
 [resource]
 script = ExtResource("1_08x23")
@@ -24,5 +95,5 @@ panel_raised_style = ExtResource("2_tuolt")
 panel_accent_style = ExtResource("1_no8k2")
 normal = Color(0.24705882, 0.23529412, 0.2627451, 1)
 selection = Color(0.74, 1, 0.766, 0.49803922)
-regions = Array[ExtResource("3_84ch2")]([ExtResource("4_qatla"), ExtResource("5_tikrk"), ExtResource("6_foijk"), ExtResource("7_utw5m"), ExtResource("8_vyh76"), ExtResource("9_cslah"), ExtResource("10_w7o2r"), ExtResource("11_foijk"), ExtResource("12_utw5m")])
+regions = Array[ExtResource("3_84ch2")]([SubResource("Resource_lhj6e"), SubResource("Resource_05k0q"), SubResource("Resource_84ch2"), SubResource("Resource_ighqu"), SubResource("Resource_jp6wh"), SubResource("Resource_1rr0o"), SubResource("Resource_fwv60"), SubResource("Resource_15o8u"), SubResource("Resource_nsgc2")])
 metadata/_custom_type_script = "uid://yy2lugkcy2wv"

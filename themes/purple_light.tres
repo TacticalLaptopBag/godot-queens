@@ -5,21 +5,79 @@
 [ext_resource type="StyleBox" uid="uid://b10f180ykegce" path="res://material3/light/panel_raised_1.tres" id="2_ljlij"]
 [ext_resource type="Theme" uid="uid://8jitidnxpeic" path="res://material3/light/material-theme-light.tres" id="2_s5vpt"]
 [ext_resource type="Script" uid="uid://r6mty4ahoc0a" path="res://src/game_theme_region.gd" id="3_hppvt"]
-[ext_resource type="Resource" uid="uid://dsam33fpw6ff6" path="res://themes/palettes/red700.tres" id="4_hppvt"]
-[ext_resource type="Resource" uid="uid://cdt1g8ghr51dm" path="res://themes/palettes/purple700.tres" id="5_b53he"]
-[ext_resource type="Resource" uid="uid://buajgakbh667i" path="res://themes/palettes/blue700.tres" id="6_nivmu"]
-[ext_resource type="Resource" uid="uid://5xleu3mt0c1d" path="res://themes/palettes/teal700.tres" id="7_e3vvj"]
-[ext_resource type="Resource" uid="uid://c8psrtj634gfc" path="res://themes/palettes/green800.tres" id="8_46lhu"]
+[ext_resource type="Texture2D" uid="uid://batposxl2adj2" path="res://img/colorblind/square_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="4_nivmu"]
+[ext_resource type="Texture2D" uid="uid://dbjaux4s4e0s7" path="res://img/colorblind/circle_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="5_e3vvj"]
+[ext_resource type="Texture2D" uid="uid://c224mm4llsif7" path="res://img/colorblind/change_history_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="6_46lhu"]
+[ext_resource type="Texture2D" uid="uid://b77e7i41u1sve" path="res://img/colorblind/star_18dp_FFFFFF_FILL0_wght500_GRAD-25_opsz20.svg" id="7_uh018"]
+[ext_resource type="Texture2D" uid="uid://b33tqjiioesov" path="res://img/colorblind/square_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="8_k0om8"]
 [ext_resource type="Texture2D" uid="uid://rumqaleyh7ab" path="res://img/colorblind/circle_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="9_nivmu"]
-[ext_resource type="Resource" uid="uid://ckw4vvcbub46i" path="res://themes/palettes/orange700.tres" id="10_k0om8"]
-[ext_resource type="Resource" uid="uid://dtvpbmgrau4jv" path="res://themes/palettes/lime700.tres" id="11_nivmu"]
-[ext_resource type="Resource" uid="uid://b3fkkb1tgd5qj" path="res://themes/palettes/blue-gray600.tres" id="12_nivmu"]
+[ext_resource type="Texture2D" uid="uid://bvlueb5on8hwc" path="res://img/colorblind/change_history_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="10_4pkqy"]
+[ext_resource type="Texture2D" uid="uid://lfdk3a1ity5d" path="res://img/colorblind/star_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="11_nsnej"]
+[ext_resource type="Texture2D" uid="uid://biaqqm6jadi2e" path="res://img/colorblind/add_18dp_FFFFFF_FILL1_wght500_GRAD-25_opsz20.svg" id="12_3w0v8"]
 
-[sub_resource type="Resource" id="Resource_e3vvj"]
+[sub_resource type="Resource" id="Resource_4eui4"]
+script = ExtResource("3_hppvt")
+name = "Red 700"
+bg_color = Color(0.827451, 0.18431373, 0.18431373, 1)
+colorblind_shape = ExtResource("4_nivmu")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_xc4m8"]
+script = ExtResource("3_hppvt")
+name = "Purple 700"
+bg_color = Color(0.48235294, 0.12156863, 0.63529414, 1)
+colorblind_shape = ExtResource("5_e3vvj")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_8bcqk"]
+script = ExtResource("3_hppvt")
+name = "Blue 700"
+bg_color = Color(0.09803922, 0.4627451, 0.8235294, 1)
+colorblind_shape = ExtResource("6_46lhu")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_mi78g"]
+script = ExtResource("3_hppvt")
+name = "Teal 700"
+bg_color = Color(0, 0.4745098, 0.41960785, 1)
+colorblind_shape = ExtResource("7_uh018")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_eietp"]
+script = ExtResource("3_hppvt")
+name = "Green 800"
+bg_color = Color(0.18039216, 0.49019608, 0.19607843, 1)
+colorblind_shape = ExtResource("8_k0om8")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_qwrtj"]
 script = ExtResource("3_hppvt")
 name = "Brown 500"
 bg_color = Color(0.4745098, 0.33333334, 0.28235295, 1)
 colorblind_shape = ExtResource("9_nivmu")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_lfi0c"]
+script = ExtResource("3_hppvt")
+name = "Orange 700"
+bg_color = Color(0.9607843, 0.4862745, 0, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("10_4pkqy")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_6k8xw"]
+script = ExtResource("3_hppvt")
+name = "Lime 700"
+bg_color = Color(0.6862745, 0.7058824, 0.16862746, 1)
+fg_color = Color(0, 0, 0, 1)
+colorblind_shape = ExtResource("11_nsnej")
+metadata/_custom_type_script = "uid://r6mty4ahoc0a"
+
+[sub_resource type="Resource" id="Resource_m6aro"]
+script = ExtResource("3_hppvt")
+name = "Blue Gray 600"
+bg_color = Color(0.32941177, 0.43137255, 0.47843137, 1)
+colorblind_shape = ExtResource("12_3w0v8")
 metadata/_custom_type_script = "uid://r6mty4ahoc0a"
 
 [resource]
@@ -31,5 +89,5 @@ panel_raised_style = ExtResource("2_ljlij")
 panel_accent_style = ExtResource("1_bls4e")
 normal = Color(0.88235295, 0.85882354, 0.8901961, 1)
 selection = Color(0.47790003, 0.81, 0.51110995, 0.49803922)
-regions = Array[ExtResource("3_hppvt")]([ExtResource("4_hppvt"), ExtResource("5_b53he"), ExtResource("6_nivmu"), ExtResource("7_e3vvj"), ExtResource("8_46lhu"), SubResource("Resource_e3vvj"), ExtResource("10_k0om8"), ExtResource("11_nivmu"), ExtResource("12_nivmu")])
+regions = Array[ExtResource("3_hppvt")]([SubResource("Resource_4eui4"), SubResource("Resource_xc4m8"), SubResource("Resource_8bcqk"), SubResource("Resource_mi78g"), SubResource("Resource_eietp"), SubResource("Resource_qwrtj"), SubResource("Resource_lfi0c"), SubResource("Resource_6k8xw"), SubResource("Resource_m6aro")])
 metadata/_custom_type_script = "uid://yy2lugkcy2wv"
