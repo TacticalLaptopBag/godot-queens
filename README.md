@@ -1,4 +1,8 @@
-# Queens.gd
+<h1 align="center">
+  Queens.gd
+
+  ![Queens.gd Icon](icon.png)
+</h1>
 
 The classic LinkedIn puzzle, [Queens][queens], reimplemented in Godot.
 Select from 5x5, 6x6, 7x7, or 9x9 grids.
@@ -9,6 +13,8 @@ No internet connection required for standalone builds.
 Don't want to download? Play in your web browser on [itch.io][itch]
 
 Code based on [Tango.gd][tango.gd].
+
+![Screenshot of Queens.gd gameplay](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png)
 
 ## How to Play
 
