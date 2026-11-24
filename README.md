@@ -1,7 +1,8 @@
 <h1 align="center">
-  Queens.gd
 
   ![Queens.gd Icon](icon.png)
+
+  Queens.gd
 </h1>
 
 The classic LinkedIn puzzle, [Queens][queens], reimplemented in Godot.
