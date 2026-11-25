@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://dkuqrw0fppnps" path="res://src/tile.gd" id="2_6p3j2"]
 [ext_resource type="Script" uid="uid://c26mk37sdphu6" path="res://src/haptic_config.gd" id="3_284l3"]
 [ext_resource type="Texture2D" uid="uid://bhv6rdjyejrjp" path="res://img/crown/square-filled.png" id="4_w8vld"]
-[ext_resource type="Texture2D" uid="uid://bvjm1siy2l8gy" path="res://img/crown/close.svg" id="5_jm5cm"]
+[ext_resource type="Texture2D" uid="uid://bsrodxjyqyw3m" path="res://img/close_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="5_284l3"]
 [ext_resource type="Texture2D" uid="uid://x20sbp2qtoqp" path="res://img/crown/crown.svg" id="6_vknvr"]
 [ext_resource type="Texture2D" uid="uid://blmggj33yb62s" path="res://img/crown/warning.svg" id="7_jdkp0"]
 [ext_resource type="Texture2D" uid="uid://b33tqjiioesov" path="res://img/colorblind/square_18dp_FFFFFF_FILL1_wght100_GRAD-25_opsz20.svg" id="8_284l3"]
@@ -51,7 +51,7 @@ texture = ExtResource("4_w8vld")
 
 [node name="Mark" type="Sprite2D" parent="." unique_id=1535633344]
 modulate = Color(0, 0, 0, 1)
-texture = ExtResource("5_jm5cm")
+texture = ExtResource("5_284l3")
 
 [node name="Crown" type="Sprite2D" parent="." unique_id=1536696781]
 modulate = Color(0, 0, 0, 1)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://qdfi0k1ilhwd"]
 
 [ext_resource type="Script" uid="uid://blmxjcbuttn16" path="res://src/game_manual.gd" id="2_ipjxo"]
-[ext_resource type="Texture2D" uid="uid://bvjm1siy2l8gy" path="res://img/crown/close.svg" id="2_x4t0y"]
+[ext_resource type="Texture2D" uid="uid://bsrodxjyqyw3m" path="res://img/close_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="2_pv3m0"]
 [ext_resource type="Script" uid="uid://byej8j17d6dmp" path="res://src/close_button.gd" id="3_pv3m0"]
 
 [node name="Manual" type="PanelContainer" unique_id=2069666336]
@@ -35,7 +35,7 @@ text = "How to Play"
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
-icon = ExtResource("2_x4t0y")
+icon = ExtResource("2_pv3m0")
 script = ExtResource("3_pv3m0")
 hide_control = NodePath("../../../..")
 
