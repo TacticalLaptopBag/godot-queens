@@ -15,25 +15,34 @@ var grid_size := 6:
 	set(value):
 		puzzle = value
 		update_board()
-		start_ticks = Time.get_ticks_msec()
-		end_ticks = -1
+		in_progress = true
 		puzzle_changed.emit()
 
 var tiles: Array[Tile] = []
 var changes: Array[Change] = []
 var undoing := false
-var start_ticks := -1
-var end_ticks := -1
+var in_progress := false
 var validating := false
 
 signal puzzle_changed()
 signal cell_type_changed(cell: Cell, old_type: Cell.Type)
-signal puzzle_completed(start_ticks: int, end_ticks: int)
+signal puzzle_completed(timer: float)
 
 
 func _ready():
 	puzzle = PuzzleProvider.get_puzzle(grid_size)
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
+
+
+func _process(delta: float) -> void:
+	if in_progress:
+		if puzzle.timer < 0:
+			puzzle.timer = delta
+		else:
+			var prev_timer := puzzle.timer
+			puzzle.timer += delta
+			if floor(prev_timer) < floor(puzzle.timer):
+				DataPersistence.save_in_progress_puzzle(puzzle)
 
 
 func get_tile(grid_position: Vector2i) -> Tile:
@@ -76,15 +85,15 @@ func _update_state():
 	validating = true
 	var is_valid := puzzle.validate()
 	validating = false
-	if is_valid and puzzle.has_all_crowns_placed() and end_ticks == -1:
+	if is_valid and puzzle.has_all_crowns_placed() and in_progress:
 		print("you're winner!")
 		for cell in puzzle.cells:
 			cell.locked = true
 			
-		end_ticks = Time.get_ticks_msec()
+		in_progress = false
 		# Clean up in-progress on completion before emitting
 		DataPersistence.delete_in_progress_puzzle(grid_size)
-		puzzle_completed.emit(start_ticks, end_ticks)
+		puzzle_completed.emit(puzzle.timer)
 
 
 func _update_bounding_box():
@@ -102,7 +111,7 @@ func _on_cell_type_changed(cell: Cell, old_type: Cell.Type):
 		var change := Change.new(cell, old_type, cell.type)
 		changes.push_back(change)
 		# Save in-progress on every cell change, but not after completion
-		if end_ticks == -1:
+		if in_progress:
 			DataPersistence.save_in_progress_puzzle(puzzle)
 	else:
 		undoing = false

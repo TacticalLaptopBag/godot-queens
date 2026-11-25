@@ -26,24 +26,14 @@
 [ext_resource type="Script" uid="uid://bu6ayebyy6rek" path="res://src/reset_button.gd" id="15_qnb83"]
 [ext_resource type="Script" uid="uid://bj8yi5w3ycoms" path="res://src/scoreboard.gd" id="16_pl11u"]
 [ext_resource type="PackedScene" uid="uid://baxxwm7mikvat" path="res://scenes/scoreboard_row.tscn" id="17_bhx41"]
+[ext_resource type="Script" uid="uid://bk8j2aucu2phe" path="res://src/bottom_row.gd" id="17_js0lu"]
 [ext_resource type="Script" uid="uid://be2h3iuojs1he" path="res://src/focus_on_visible.gd" id="18_5newe"]
 [ext_resource type="StyleBox" uid="uid://b4arnxwxqko2j" path="res://material3/dark/panel_accent_1.tres" id="19_sww3w"]
+[ext_resource type="Script" uid="uid://cfwlae6eojn42" path="res://src/victory_dialog.gd" id="25_gxtfn"]
 [ext_resource type="PackedScene" uid="uid://qdfi0k1ilhwd" path="res://scenes/game_manual.tscn" id="27_suyxu"]
 [ext_resource type="Texture2D" uid="uid://4leqktgdpme0" path="res://img/format_paint_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="29_wljb1"]
 [ext_resource type="Script" uid="uid://d0mp11aic3huq" path="res://src/colorblind_switch.gd" id="30_v2yb1"]
 [ext_resource type="Texture2D" uid="uid://ptnxe3dq1efh" path="res://img/format_paint_off_24dp_FFFFFF_FILL1_wght400_GRAD0_opsz24.svg" id="31_js0lu"]
-
-[sub_resource type="GDScript" id="GDScript_u5sy4"]
-script/source = "extends HBoxContainer
-
-
-func _on_board_puzzle_completed(_start_ticks: int, _end_ticks: int) -> void:
-	visible = false
-
-
-func _on_board_puzzle_changed() -> void:
-	visible = true
-"
 
 [sub_resource type="InputEventAction" id="InputEventAction_qnb83"]
 action = &"undo"
@@ -62,31 +52,6 @@ action = &"new_game"
 
 [sub_resource type="Shortcut" id="Shortcut_qnb83"]
 events = [SubResource("InputEventAction_bhx41")]
-
-[sub_resource type="GDScript" id="GDScript_gee14"]
-script/source = "extends PanelContainer
-
-
-@export var time_label: Label
-
-@onready var time_label_fmt := time_label.text
-
-
-func _ready():
-	visible = false
-
-
-func _on_board_puzzle_completed(start_ticks: int, end_ticks: int) -> void:
-	visible = true
-	
-	var time_ms := end_ticks - start_ticks
-	var formatted_time := Util.format_ms(time_ms)
-	time_label.text = time_label_fmt % formatted_time
-
-
-func _on_board_puzzle_changed() -> void:
-	visible = false
-"
 
 [node name="Game" type="Node2D" unique_id=1986065374]
 
@@ -217,7 +182,7 @@ size_flags_vertical = 8
 mouse_filter = 2
 theme_override_constants/separation = 24
 alignment = 1
-script = SubResource("GDScript_u5sy4")
+script = ExtResource("17_js0lu")
 
 [node name="Undo" type="Button" parent="UICanvasLayer/UI/BoardUI/MarginContainer/BottomRow" unique_id=1460636056]
 layout_mode = 2
@@ -260,7 +225,6 @@ focus_neighbor_bottom = NodePath("../../../../Menu Button")
 shortcut = SubResource("Shortcut_qnb83")
 icon = ExtResource("4_p57ef")
 script = ExtResource("1_yqjtg")
-resume_in_progress = false
 
 [node name="DialogContainer" type="CenterContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer" unique_id=712856594]
 layout_mode = 2
@@ -269,8 +233,8 @@ mouse_filter = 2
 [node name="VictoryDialog" type="PanelContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer" unique_id=1360370872 node_paths=PackedStringArray("time_label")]
 visible = false
 layout_mode = 2
-script = SubResource("GDScript_gee14")
-time_label = NodePath("MarginContainer/VBoxContainer/Content")
+script = ExtResource("25_gxtfn")
+time_label = NodePath("../../TopRow/Time")
 
 [node name="MarginContainer" type="MarginContainer" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog" unique_id=1030433429]
 layout_mode = 2
@@ -335,7 +299,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 icon = ExtResource("4_p57ef")
 script = ExtResource("1_yqjtg")
-resume_in_progress = false
 
 [node name="Focus On Visible" type="Node" parent="UICanvasLayer/UI/BoardUI/MarginContainer/DialogContainer/VictoryDialog/MarginContainer/VBoxContainer/Action Buttons/New Game" unique_id=1846849195]
 script = ExtResource("18_5newe")

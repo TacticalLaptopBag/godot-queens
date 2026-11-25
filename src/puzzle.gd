@@ -5,6 +5,7 @@ extends Resource
 @export var cells: Array[Cell] = []
 @export var solution_crowns: Array[Vector2i] = []
 var _size: int = -1
+var timer := -1.0
 var auto_marks_enabled: bool = true
 
 
