@@ -67,7 +67,7 @@ Builds:
 
 # Remove if not reproducible build
 # apksigner verify --print-certs output.apk | grep SHA-256
-AllowedAPKSigningKeys: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+# AllowedAPKSigningKeys: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
