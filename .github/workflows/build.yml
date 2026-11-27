@@ -1,5 +1,8 @@
 name: Godot export
 on: push
+  # push:
+  #   tags:
+  #     - 'v*'
 
 env:
   GODOT_VERSION: 4.7
@@ -43,3 +46,31 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: build/${{ matrix.dir }}/*
+  export-android:
+    name: Godot Export - Android
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup
+        run: |
+          echo $SECRET_RELEASE_KEYSTORE_BASE64 | base64 --decode > /root/release.keystore
+          mkdir -v -p build/Android
+          cd $PROJECT_PATH
+          sed 's@keystore/release=".*"@keystore/release="'/root/release.keystore'"@g' -i export_presets.cfg
+          sed 's@keystore/release_user=".*"@keystore/release_user="'$SECRET_RELEASE_KEYSTORE_USER'"@g' -i export_presets.cfg
+          sed 's@keystore/release_password=".*"@keystore/release_password="'$SECRET_RELEASE_KEYSTORE_PASSWORD'"@g' -i export_presets.cfg
+
+      - name: Build
+        working-directory: ${{ env.PROJECT_PATH }}
+        run: |
+          godot --headless --verbose --export-release "Android"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Queens.apk
+          path: build/Android/Queens.apk
