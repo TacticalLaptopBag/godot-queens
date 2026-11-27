@@ -28,7 +28,7 @@ RepoType: git
 Repo: https://github.com/TacticalLaptopBag/godot-queens.git
 
 Builds:
-  - versionName: 1.0.2
+  - versionName: 1.0.3-rc1
     versionCode: 6
     commit: 41506e86352b3afa9e66b8a3ddcdee017ffaf6d8
     sudo:
@@ -73,5 +73,5 @@ AutoUpdateMode: Version
 UpdateCheckMode: Tags
 # export_presets.cfg can be used to detect new versions
 UpdateCheckData: 'export_presets.cfg|version/code=(\d+)|project.godot|config/version="([^"]+)"'
-CurrentVersion: '1.0.2'
+CurrentVersion: '1.0.3-rc1'
 CurrentVersionCode: 6
