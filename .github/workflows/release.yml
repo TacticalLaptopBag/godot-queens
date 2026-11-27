@@ -1,16 +1,14 @@
 name: Create release
 
-# Merging a change to the RELEASE file into main creates the tag + GitHub release.
-on: push
-  # push:
-  #   branches:
-  #     - main
-  #   paths:
-  #     - RELEASE
-  # workflow_dispatch:
+# Pushing an annotated tag (e.g. v1.0.0) builds everything and publishes a release.
+# The release name/body come from the tag annotation.
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  # Build everything first so a broken build never produces a tag/release.
+  # Build first so a broken build never produces a release.
   build:
     name: Build
     permissions:
@@ -19,43 +17,22 @@ jobs:
     secrets: inherit # Android keystore secrets
 
   release:
-    name: Create GitHub release
+    name: Publish release
     needs: build
     runs-on: ubuntu-latest
+    concurrency: publish-release
     permissions:
-      contents: write # create the tag + release, upload assets
+      contents: write # create the release and upload assets
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0 # the action needs history to generate the release note
 
       - name: Download build artifacts
         uses: actions/download-artifact@v7
         with:
           path: artifacts # one sub-directory per artifact name
 
-      - name: Create release
-        uses: pipe-cd/actions-gh-release@v2.6.0
-        with:
-          release_file: RELEASE
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Read tag from RELEASE
-        id: tag
-        run: |
-          TAG=$(sed -n 's/^tag:[[:space:]]*["'\'']\{0,1\}\([^"'\''[:space:]#]*\).*/\1/p' RELEASE | head -n1)
-          if [ -z "$TAG" ]; then
-            echo "Could not read 'tag:' from RELEASE" >&2
-            exit 1
-          fi
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-
-      - name: Package and upload assets
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          TAG: ${{ steps.tag.outputs.tag }}
+      - name: Package assets
         run: |
           set -euo pipefail
           mkdir -p release-assets
@@ -72,4 +49,9 @@ jobs:
           done
 
           ls -lh release-assets
-          gh release upload "$TAG" release-assets/* --clobber
+
+      - name: Publish release
+        uses: ghalactic/github-release-from-tag@v6
+        with:
+          assets: |
+            - path: release-assets/*
