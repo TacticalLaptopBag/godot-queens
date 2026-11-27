@@ -13,8 +13,8 @@
 #    apksigner sign --ks-key-alias $KS_ALIAS --ks $KS_PATH output.apk
 
 Categories:
-  - Games
-License: GPL-3.0
+  - Puzzle Game
+License: GPL-3.0-or-later
 AuthorName: Tactical Laptop Bag
 AuthorEmail: tacticallaptopbag@protonmail.com
 WebSite: https://tacticallaptopbag.itch.io/queens
