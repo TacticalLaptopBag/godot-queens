@@ -9,43 +9,43 @@ env:
   PROJECT_PATH: .
 
 jobs:
-  export:
-    name: Godot Export - ${{ matrix.name }}
-    runs-on: ubuntu-26.04
-    container:
-      image: barichello/godot-ci:4.7
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { name: Linux x86_64,   preset: "Linux (x86_64)",             dir: Linux/x86_64,   artifact: queens_linux_x86-64 }
-          - { name: Linux x86_32,   preset: "Linux (x86_32)",             dir: Linux/x86_32,   artifact: queens_linux_x86-32 }
-          - { name: Linux arm64,    preset: "Linux (arm64)",              dir: Linux/arm64,    artifact: queens_linux_arm64 }
-          - { name: macOS,          preset: "macOS",                      dir: macOS,          artifact: queens_macos_x86-64 }
-          - { name: Windows x86_64, preset: "Windows Desktop (x86_64)",   dir: Windows/x86_64, artifact: queens_windows_x86-64 }
-          - { name: Windows x86_32, preset: "Windows Desktop (x86_32)",   dir: Windows/x86_32, artifact: queens_windows_x86-32 }
-          - { name: Windows arm64,  preset: "Windows Desktop (arm64)",    dir: Windows/arm64,  artifact: queens_windows_arm64 }
-          - { name: Web,            preset: "Web",                        dir: Web,            artifact: queens_web }
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+  # export:
+  #   name: Godot Export - ${{ matrix.name }}
+  #   runs-on: ubuntu-26.04
+  #   container:
+  #     image: barichello/godot-ci:4.7
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - { name: Linux x86_64,   preset: "Linux (x86_64)",             dir: Linux/x86_64,   artifact: queens_linux_x86-64 }
+  #         - { name: Linux x86_32,   preset: "Linux (x86_32)",             dir: Linux/x86_32,   artifact: queens_linux_x86-32 }
+  #         - { name: Linux arm64,    preset: "Linux (arm64)",              dir: Linux/arm64,    artifact: queens_linux_arm64 }
+  #         - { name: macOS,          preset: "macOS",                      dir: macOS,          artifact: queens_macos_x86-64 }
+  #         - { name: Windows x86_64, preset: "Windows Desktop (x86_64)",   dir: Windows/x86_64, artifact: queens_windows_x86-64 }
+  #         - { name: Windows x86_32, preset: "Windows Desktop (x86_32)",   dir: Windows/x86_32, artifact: queens_windows_x86-32 }
+  #         - { name: Windows arm64,  preset: "Windows Desktop (arm64)",    dir: Windows/arm64,  artifact: queens_windows_arm64 }
+  #         - { name: Web,            preset: "Web",                        dir: Web,            artifact: queens_web }
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v7
 
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+  #     - name: Setup
+  #       run: |
+  #         mkdir -v -p ~/.local/share/godot/export_templates/
+  #         mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
-      - name: Build
-        working-directory: ${{ env.PROJECT_PATH }}
-        run: |
-          mkdir -v -p build/${{ matrix.dir }}
-          godot --headless --verbose --export-release "${{ matrix.preset }}"
+  #     - name: Build
+  #       working-directory: ${{ env.PROJECT_PATH }}
+  #       run: |
+  #         mkdir -v -p build/${{ matrix.dir }}
+  #         godot --headless --verbose --export-release "${{ matrix.preset }}"
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{ matrix.artifact }}
-          path: build/${{ matrix.dir }}/*
+  #     - name: Upload Artifact
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         name: ${{ matrix.artifact }}
+  #         path: build/${{ matrix.dir }}/*
   export-android:
     name: Godot Export - Android
     runs-on: ubuntu-26.04
@@ -59,20 +59,26 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -v -p ~/.config/godot
+          cp -r /root/.config/godot/. ~/.config/godot/
 
       - name: Import Keystore
+        working-directory: ${{ env.PROJECT_PATH }}
+        env:
+          SECRET_RELEASE_KEYSTORE_BASE64: ${{ secrets.SECRET_RELEASE_KEYSTORE_BASE64 }}
+          SECRET_RELEASE_KEYSTORE_USER: ${{ secrets.SECRET_RELEASE_KEYSTORE_USER }}
+          SECRET_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.SECRET_RELEASE_KEYSTORE_PASSWORD }}
         run: |
-          echo $SECRET_RELEASE_KEYSTORE_BASE64 | base64 --decode > /root/release.keystore
-          mkdir -v -p build/Android
-          cd $PROJECT_PATH
-          sed 's@keystore/release=".*"@keystore/release="'/root/release.keystore'"@g' -i export_presets.cfg
-          sed 's@keystore/release_user=".*"@keystore/release_user="'$SECRET_RELEASE_KEYSTORE_USER'"@g' -i export_presets.cfg
-          sed 's@keystore/release_password=".*"@keystore/release_password="'$SECRET_RELEASE_KEYSTORE_PASSWORD'"@g' -i export_presets.cfg
+          echo "$SECRET_RELEASE_KEYSTORE_BASE64" | base64 --decode > /root/release.keystore
+          sed 's@keystore/release=".*"@keystore/release="/root/release.keystore"@g' -i export_presets.cfg
+          sed 's@keystore/release_user=".*"@keystore/release_user="'"$SECRET_RELEASE_KEYSTORE_USER"'"@g' -i export_presets.cfg
+          sed 's@keystore/release_password=".*"@keystore/release_password="'"$SECRET_RELEASE_KEYSTORE_PASSWORD"'"@g' -i export_presets.cfg
 
       - name: Build
         working-directory: ${{ env.PROJECT_PATH }}
         run: |
-          godot --headless --verbose --export-release "Android"
+          mkdir -v -p build/Android
+          godot --headless --verbose --export-release "Android" build/Android/Queens.apk
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
