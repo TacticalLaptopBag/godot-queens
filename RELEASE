@@ -2,5 +2,5 @@ tag: v1.0.3-rc1
 name: Queens.gd | v1.0.3-rc1
 prerelease: true
 releaseNote: |
-  * Packaging stuffs
-  * F-Droid release, maybe?
+  - Packaging stuffs
+  - F-Droid release, maybe?
