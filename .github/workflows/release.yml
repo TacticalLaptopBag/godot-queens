@@ -1,13 +1,13 @@
 name: Create release
 
 # Merging a change to the RELEASE file into main creates the tag + GitHub release.
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - RELEASE
-  workflow_dispatch:
+on: push
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - RELEASE
+  # workflow_dispatch:
 
 jobs:
   # Build everything first so a broken build never produces a tag/release.
