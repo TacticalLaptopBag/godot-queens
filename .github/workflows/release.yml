@@ -98,10 +98,10 @@ jobs:
               print
               exit
             }
-          ' "$PROJECT_FILE")
+          ' "project.godot")
  
           if [ -z "$VERSION" ]; then
-            echo "::error::No config/version found in [application] section of $PROJECT_FILE"
+            echo "::error::No config/version found in [application] section of project.godot"
             echo "::error::Set it in Project Settings > Application > Config > Version"
             exit 1
           fi
