@@ -17,12 +17,12 @@ jobs:
       matrix:
         include:
           - { name: Linux x86_64,   preset: "Linux (x86_64)",             dir: Linux/x86_64,   artifact: queens_linux_x86-64 }
-          # - { name: Linux x86_32,   preset: "Linux (x86_32)",             dir: Linux/x86_32,   artifact: queens_linux_x86-32 }
-          # - { name: Linux arm64,    preset: "Linux (arm64)",              dir: Linux/arm64,    artifact: queens_linux_arm64 }
-          # - { name: macOS,          preset: "macOS",                      dir: macOS,          artifact: queens_macos }
-          # - { name: Windows x86_64, preset: "Windows Desktop (x86_64)",   dir: Windows/x86_64, artifact: queens_windows_x86-64 }
-          # - { name: Windows x86_32, preset: "Windows Desktop (x86_32)",   dir: Windows/x86_32, artifact: queens_windows_x86-32 }
-          # - { name: Windows arm64,  preset: "Windows Desktop (arm64)",    dir: Windows/arm64,  artifact: queens_windows_arm64 }
+          - { name: Linux x86_32,   preset: "Linux (x86_32)",             dir: Linux/x86_32,   artifact: queens_linux_x86-32 }
+          - { name: Linux arm64,    preset: "Linux (arm64)",              dir: Linux/arm64,    artifact: queens_linux_arm64 }
+          - { name: macOS,          preset: "macOS",                      dir: macOS,          artifact: queens_macos }
+          - { name: Windows x86_64, preset: "Windows Desktop (x86_64)",   dir: Windows/x86_64, artifact: queens_windows_x86-64 }
+          - { name: Windows x86_32, preset: "Windows Desktop (x86_32)",   dir: Windows/x86_32, artifact: queens_windows_x86-32 }
+          - { name: Windows arm64,  preset: "Windows Desktop (arm64)",    dir: Windows/arm64,  artifact: queens_windows_arm64 }
           - { name: Web,            preset: "Web",                        dir: Web,            artifact: queens_web }
     steps:
       - name: Checkout
