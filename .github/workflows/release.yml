@@ -6,6 +6,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   # Build first so a broken build never produces a release.
