@@ -30,7 +30,7 @@ Repo: https://github.com/TacticalLaptopBag/godot-queens.git
 Builds:
   - versionName: 1.0.2
     versionCode: 6
-    commit: 9d52d0a790210e4fea43b4b71bd8e5bfaac94810
+    commit: 14cad94b8d73843818a10cb61bdf420fa0c2206e
     sudo:
       - apt-get update
       # For llvm build use clang instead
