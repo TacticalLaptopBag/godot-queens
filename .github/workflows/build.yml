@@ -9,103 +9,152 @@ env:
   PROJECT_PATH: .
 
 jobs:
-  export-desktop:
-    name: Godot Export - Desktop
+  export-linux-x86-64:
+    name: Godot Export - Linux x86_64
     runs-on: ubuntu-26.04
     container:
       image: barichello/godot-ci:4.7
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-      - name: Linux x86_64 Build
+      - name: Build
         run: |
           EXPORT_DIR=build/Linux/x86_64
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Linux (x86_64)"
-      - name: Linux x86_32 Build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_linux_x86-64
+          path: build/Linux/x86_64/*
+
+  export-linux-x86-32:
+    name: Godot Export - Linux x86_32
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/Linux/x86_32
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Linux (x86_32)"
-      - name: Linux arm64 Build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_linux_x86-32
+          path: build/Linux/x86_32/*
+
+  export-linux-arm64:
+    name: Godot Export - Linux arm64
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/Linux/arm64
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Linux (arm64)"
-      - name: macOS Build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_linux_arm64
+          path: build/Linux/arm64/*
+
+  export-macos:
+    name: Godot Export - macOS
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/macOS
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "macOS"
-      - name: Windows x86_64 Build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_macos_x86-64
+          path: build/macOS/queens.zip
+
+  export-windows-x86-64:
+    name: Godot Export - Windows x86_64
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/Windows/x86_64
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Windows Desktop (x86_64)"
-      - name: Windows x86_32 Build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_windows_x86-64
+          path: build/Windows/x86_64/*
+
+  export-windows-x86-32:
+    name: Godot Export - Windows x86_32
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/Windows/x86_32
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Windows Desktop (x86_32)"
-      - name: Windows arm64 Build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_windows_x86-32
+          path: build/Windows/x86_32/*
+
+  export-windows-arm64:
+    name: Godot Export - Windows arm64
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/Windows/arm64
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Windows Desktop (arm64)"
-      - name: Web
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: queens_windows_arm64
+          path: build/Windows/arm64/*
+
+  export-web:
+    name: Godot Export - Web
+    runs-on: ubuntu-26.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Build
         run: |
           EXPORT_DIR=build/Web
           mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Web"
-      - name: Upload Linux x86_64 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_linux_x86-64
-          path: build/Linux/x86_64/*
-      - name: Upload Linux x86_32 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_linux_x86-32
-          path: build/Linux/x86_32/*
-      - name: Upload Linux arm64 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_linux_arm64
-          path: build/Linux/arm64/*
-      - name: Upload macOS Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_macos_x86-64
-          path: build/macOS/queens.zip
-      - name: Upload Windows x86_64 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_windows_x86-64
-          path: build/Windows/x86_64/*
-      - name: Upload Windows x86_32 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_windows_x86-32
-          path: build/Windows/x86_32/*
-      - name: Upload Windows arm64 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: queens_windows_arm64
-          path: build/Windows/arm64/*
-      - name: Upload Web Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
         with:
           name: queens_web
           path: build/Web/*
