@@ -62,7 +62,6 @@ jobs:
     # needs: release
     needs: build
     runs-on: ubuntu-latest
-    concurrency: publish-release
     permissions:
       contents: write
     strategy:
