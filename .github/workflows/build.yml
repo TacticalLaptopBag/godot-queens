@@ -1,8 +1,6 @@
 name: Godot export
-on:
-  push:
-    tags:
-      - 'v*'
+on: 
+  workflow_call:
 
 env:
   GODOT_VERSION: 4.7
