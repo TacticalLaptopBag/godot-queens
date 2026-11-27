@@ -114,7 +114,7 @@ jobs:
           butlerApiKey: ${{ secrets.ITCH_IO_API_KEY }}
           gameData: artifacts/queens_${{ matrix.gameData }}
           itchUsername: tacticallaptopbag
-          itchGameId: queens
+          itchGameId: queens-test
           buildChannel: ${{ matrix.channel }}
           buildNumber: ${{ steps.version.outputs.version }}
 
