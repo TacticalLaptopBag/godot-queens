@@ -17,45 +17,45 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets: inherit # Android keystore secrets
 
-  # release:
-  #   name: Publish release
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   concurrency: publish-release
-  #   permissions:
-  #     contents: write # create the release and upload assets
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v7
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency: publish-release
+    permissions:
+      contents: write # create the release and upload assets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
 
-  #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v7
-  #       with:
-  #         path: artifacts # one sub-directory per artifact name
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: artifacts # one sub-directory per artifact name
 
-  #     - name: Package assets
-  #       run: |
-  #         set -euo pipefail
-  #         mkdir -p release-assets
+      - name: Package assets
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
 
-  #         for dir in artifacts/*/; do
-  #           name=$(basename "$dir")
-  #           if compgen -G "${dir}*.apk" > /dev/null; then
-  #             # Android: attach the APK as-is
-  #             cp "${dir}"*.apk release-assets/
-  #           else
-  #             # Everything else: zip the export directory
-  #             (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
-  #           fi
-  #         done
+          for dir in artifacts/*/; do
+            name=$(basename "$dir")
+            if compgen -G "${dir}*.apk" > /dev/null; then
+              # Android: attach the APK as-is
+              cp "${dir}"*.apk release-assets/
+            else
+              # Everything else: zip the export directory
+              (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
+            fi
+          done
 
-  #         ls -lh release-assets
+          ls -lh release-assets
 
-  #     - name: Publish release
-  #       uses: ghalactic/github-release-from-tag@v6
-  #       with:
-  #         assets: |
-  #           - path: release-assets/*
+      - name: Publish release
+        uses: ghalactic/github-release-from-tag@v6
+        with:
+          assets: |
+            - path: release-assets/*
 
   deploy:
     name: Deploy to itch.io
@@ -69,12 +69,12 @@ jobs:
       matrix:
         include:
           - { gameData: queens_linux_x86-64, channel: linux_x86-64 }
-          # - { gameData: queens_linux_x86-32, channel: linux_x86-32 }
-          # - { gameData: queens_linux_arm64, channel: linux_arm64 }
-          # - { gameData: queens_macos, channel: macos }
-          # - { gameData: queens_windows_x86-64, channel: windows_x86-64 }
-          # - { gameData: queens_windows_x86-32, channel: windows_x86-32 }
-          # - { gameData: queens_windows_arm64, channel: windows_arm64 }
+          - { gameData: queens_linux_x86-32, channel: linux_x86-32 }
+          - { gameData: queens_linux_arm64, channel: linux_arm64 }
+          - { gameData: queens_macos, channel: macos }
+          - { gameData: queens_windows_x86-64, channel: windows_x86-64 }
+          - { gameData: queens_windows_x86-32, channel: windows_x86-32 }
+          - { gameData: queens_windows_arm64, channel: windows_arm64 }
           - { gameData: queens_web, channel: web }
           - { gameData: Queens.apk, channel: android }
     steps:
@@ -85,24 +85,6 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           path: artifacts # one sub-directory per artifact name
-
-      # - name: Package assets
-      #   run: |
-      #     set -euo pipefail
-      #     mkdir -p release-assets
-
-      #     for dir in artifacts/*/; do
-      #       name=$(basename "$dir")
-      #       if compgen -G "${dir}*.apk" > /dev/null; then
-      #         # Android: attach the APK as-is
-      #         cp "${dir}"*.apk release-assets/
-      #       else
-      #         # Everything else: zip the export directory
-      #         (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
-      #       fi
-      #     done
-
-      #     ls -lh release-assets
 
       - name: Read version
         id: version
