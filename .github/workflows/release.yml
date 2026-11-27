@@ -16,13 +16,66 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets: inherit # Android keystore secrets
 
-  release:
-    name: Publish release
+  # release:
+  #   name: Publish release
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   concurrency: publish-release
+  #   permissions:
+  #     contents: write # create the release and upload assets
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v7
+
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v7
+  #       with:
+  #         path: artifacts # one sub-directory per artifact name
+
+  #     - name: Package assets
+  #       run: |
+  #         set -euo pipefail
+  #         mkdir -p release-assets
+
+  #         for dir in artifacts/*/; do
+  #           name=$(basename "$dir")
+  #           if compgen -G "${dir}*.apk" > /dev/null; then
+  #             # Android: attach the APK as-is
+  #             cp "${dir}"*.apk release-assets/
+  #           else
+  #             # Everything else: zip the export directory
+  #             (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
+  #           fi
+  #         done
+
+  #         ls -lh release-assets
+
+  #     - name: Publish release
+  #       uses: ghalactic/github-release-from-tag@v6
+  #       with:
+  #         assets: |
+  #           - path: release-assets/*
+
+  deploy:
+    name: Deploy to itch.io
+    # needs: release
     needs: build
     runs-on: ubuntu-latest
     concurrency: publish-release
     permissions:
-      contents: write # create the release and upload assets
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { gameData: linux_x86-64, channel: linux }
+          # - { gameData: linux_x86-32, channel: linux }
+          # - { gameData: linux_arm64, channel: linux }
+          # - { gameData: macos, channel: macos }
+          # - { gameData: windows_x86-64, channel: windows }
+          # - { gameData: windows_x86-32, channel: windows }
+          # - { gameData: windows_arm64, channel: windows }
+          - { gameData: web, channel: webgl }
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -32,26 +85,36 @@ jobs:
         with:
           path: artifacts # one sub-directory per artifact name
 
-      - name: Package assets
+      - name: Read version
+        id: version
         run: |
-          set -euo pipefail
-          mkdir -p release-assets
+          # Only look inside the [application] section, strip CRs, whitespace, and quotes
+          VERSION=$(awk '
+            /^\[/ { section = $0 }
+            section == "[application]" && /^config\/version[[:space:]]*=/ {
+              sub(/^[^=]*=[[:space:]]*/, "")
+              gsub(/\r|"/, "")
+              print
+              exit
+            }
+          ' "$PROJECT_FILE")
+ 
+          if [ -z "$VERSION" ]; then
+            echo "::error::No config/version found in [application] section of $PROJECT_FILE"
+            echo "::error::Set it in Project Settings > Application > Config > Version"
+            exit 1
+          fi
+ 
+          echo "Project version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"   # step output
 
-          for dir in artifacts/*/; do
-            name=$(basename "$dir")
-            if compgen -G "${dir}*.apk" > /dev/null; then
-              # Android: attach the APK as-is
-              cp "${dir}"*.apk release-assets/
-            else
-              # Everything else: zip the export directory
-              (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
-            fi
-          done
-
-          ls -lh release-assets
-
-      - name: Publish release
-        uses: ghalactic/github-release-from-tag@v6
+      - name: Deply to itch.io
+        uses: KikimoraGames/itch-publish@v0.0.3
         with:
-          assets: |
-            - path: release-assets/*
+          butlerApiKey: ${{ secrets.ITCH_IO_API_KEY }}
+          gameData: artifacts/queens_${{ matrix.gameData }}
+          itchUsername: tacticallaptopbag
+          itchGameId: queens
+          buildChannel: ${{ matrix.channel }}
+          buildNumber: ${{ steps.version.outputs.version }}
+
