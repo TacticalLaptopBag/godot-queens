@@ -72,6 +72,6 @@ Builds:
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
 # export_presets.cfg can be used to detect new versions
-UpdateCheckData: export_presets.cfg|version/code=(\d+)|.|version/name="([\d.]+)"
+UpdateCheckData: 'export_presets.cfg|version/code=(\d+)|project.godot|config/version="([^"]+)"'
 CurrentVersion: '1.0.2'
 CurrentVersionCode: 6
