@@ -68,14 +68,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { gameData: queens_linux_x86-64.zip, channel: linux_x86-64 }
-          # - { gameData: queens_linux_x86-32.zip, channel: linux_x86-32 }
-          # - { gameData: queens_linux_arm64.zip, channel: linux_arm64 }
-          # - { gameData: queens_macos.zip, channel: macos }
-          # - { gameData: queens_windows_x86-64.zip, channel: windows_x86-64 }
-          # - { gameData: queens_windows_x86-32.zip, channel: windows_x86-32 }
-          # - { gameData: queens_windows_arm64.zip, channel: windows_arm64 }
-          - { gameData: queens_web.zip, channel: web }
+          - { gameData: queens_linux_x86-64, channel: linux_x86-64 }
+          # - { gameData: queens_linux_x86-32, channel: linux_x86-32 }
+          # - { gameData: queens_linux_arm64, channel: linux_arm64 }
+          # - { gameData: queens_macos, channel: macos }
+          # - { gameData: queens_windows_x86-64, channel: windows_x86-64 }
+          # - { gameData: queens_windows_x86-32, channel: windows_x86-32 }
+          # - { gameData: queens_windows_arm64, channel: windows_arm64 }
+          - { gameData: queens_web, channel: web }
           - { gameData: Queens.apk, channel: android }
     steps:
       - name: Checkout
@@ -86,23 +86,23 @@ jobs:
         with:
           path: artifacts # one sub-directory per artifact name
 
-      - name: Package assets
-        run: |
-          set -euo pipefail
-          mkdir -p release-assets
+      # - name: Package assets
+      #   run: |
+      #     set -euo pipefail
+      #     mkdir -p release-assets
 
-          for dir in artifacts/*/; do
-            name=$(basename "$dir")
-            if compgen -G "${dir}*.apk" > /dev/null; then
-              # Android: attach the APK as-is
-              cp "${dir}"*.apk release-assets/
-            else
-              # Everything else: zip the export directory
-              (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
-            fi
-          done
+      #     for dir in artifacts/*/; do
+      #       name=$(basename "$dir")
+      #       if compgen -G "${dir}*.apk" > /dev/null; then
+      #         # Android: attach the APK as-is
+      #         cp "${dir}"*.apk release-assets/
+      #       else
+      #         # Everything else: zip the export directory
+      #         (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
+      #       fi
+      #     done
 
-          ls -lh release-assets
+      #     ls -lh release-assets
 
       - name: Read version
         id: version
@@ -131,7 +131,7 @@ jobs:
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
           butlerApiKey: ${{ secrets.ITCH_IO_API_KEY }}
-          gameData: release-assets/${{ matrix.gameData }}
+          gameData: artifacts/${{ matrix.gameData }}
           itchUsername: tacticallaptopbag
           itchGameId: queens-test
           buildChannel: ${{ matrix.channel }}
