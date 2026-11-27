@@ -9,9 +9,9 @@ env:
   PROJECT_PATH: .
 
 jobs:
-  export-linux:
-    name: Linux Export
-    runs-on: ubuntu-24.04  # Use 24.04 with godot 4
+  export-desktop:
+    name: Godot Export - Desktop
+    runs-on: ubuntu-26.04
     container:
       image: barichello/godot-ci:4.7
     steps:
@@ -21,14 +21,91 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-      - name: Linux Build
+      - name: Linux x86_64 Build
         run: |
-          mkdir -v -p build/linux
-          EXPORT_DIR="$(readlink -f build)"
+          EXPORT_DIR=build/Linux/x86_64
+          mkdir -v -p $EXPORT_DIR
           cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Linux (x86_64)" "$EXPORT_DIR/linux/$EXPORT_NAME.x86_64"
-      - name: Upload Artifact
+          godot --headless --verbose --export-release "Linux (x86_64)"
+      - name: Linux x86_32 Build
+        run: |
+          EXPORT_DIR=build/Linux/x86_32
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Linux (x86_32)"
+      - name: Linux arm64 Build
+        run: |
+          EXPORT_DIR=build/Linux/arm64
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Linux (arm64)"
+      - name: macOS Build
+        run: |
+          EXPORT_DIR=build/macOS
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "macOS"
+      - name: Windows x86_64 Build
+        run: |
+          EXPORT_DIR=build/Windows/x86_64
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows Desktop (x86_64)"
+      - name: Windows x86_32 Build
+        run: |
+          EXPORT_DIR=build/Windows/x86_32
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows Desktop (x86_32)"
+      - name: Windows arm64 Build
+        run: |
+          EXPORT_DIR=build/Windows/arm64
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows Desktop (arm64)"
+      - name: Web
+        run: |
+          EXPORT_DIR=build/Web
+          mkdir -v -p $EXPORT_DIR
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Web"
+      - name: Upload Linux x86_64 Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux
-          path: build/linux
+          name: queens_linux_x86-64
+          path: build/Linux/x86_64/*
+      - name: Upload Linux x86_32 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_linux_x86-32
+          path: build/Linux/x86_32/*
+      - name: Upload Linux arm64 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_linux_arm64
+          path: build/Linux/arm64/*
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_macos_x86-64
+          path: build/macOS/queens.zip
+      - name: Upload Windows x86_64 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_windows_x86-64
+          path: build/Windows/x86_64/*
+      - name: Upload Windows x86_32 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_windows_x86-32
+          path: build/Windows/x86_32/*
+      - name: Upload Windows arm64 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_windows_arm64
+          path: build/Windows/arm64/*
+      - name: Upload Web Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: queens_web
+          path: build/Web/*
