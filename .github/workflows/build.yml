@@ -1,11 +1,13 @@
-name: "godot-ci export"
+name: "Godot export"
 on: push
-
-# NOTE: If your `project.godot` is at the repository root, set `PROJECT_PATH` below to ".".
+  # push:
+  #   tags:
+  #     - 'v*'
 
 env:
   GODOT_VERSION: 4.7
   EXPORT_NAME: queens
+  # NOTE: If your `project.godot` is at the repository root, set `PROJECT_PATH` to ".".
   PROJECT_PATH: .
 
 jobs:
@@ -39,6 +41,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/Linux/x86_32
@@ -57,6 +65,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/Linux/arm64
@@ -75,6 +89,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/macOS
@@ -93,6 +113,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/Windows/x86_64
@@ -111,6 +137,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/Windows/x86_32
@@ -129,6 +161,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/Windows/arm64
@@ -147,6 +185,12 @@ jobs:
     container:
       image: barichello/godot-ci:4.7
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Build
         run: |
           EXPORT_DIR=build/Web
