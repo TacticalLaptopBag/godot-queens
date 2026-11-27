@@ -1,0 +1,74 @@
+name: Create release
+
+# Merging a change to the RELEASE file into main creates the tag + GitHub release.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - RELEASE
+
+jobs:
+  # Build everything first so a broken build never produces a tag/release.
+  build:
+    name: Build
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build.yml
+    secrets: inherit # Android keystore secrets
+
+  release:
+    name: Create GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the tag + release, upload assets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the action needs history to generate the release note
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: artifacts # one sub-directory per artifact name
+
+      - name: Create release
+        uses: pipe-cd/actions-gh-release@v2
+        with:
+          release_file: RELEASE
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read tag from RELEASE
+        id: tag
+        run: |
+          TAG=$(sed -n 's/^tag:[[:space:]]*["'\'']\{0,1\}\([^"'\''[:space:]#]*\).*/\1/p' RELEASE | head -n1)
+          if [ -z "$TAG" ]; then
+            echo "Could not read 'tag:' from RELEASE" >&2
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Package and upload assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+
+          for dir in artifacts/*/; do
+            name=$(basename "$dir")
+            if compgen -G "${dir}*.apk" > /dev/null; then
+              # Android: attach the APK as-is
+              cp "${dir}"*.apk release-assets/
+            else
+              # Everything else: zip the export directory
+              (cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/release-assets/${name}.zip" .)
+            fi
+          done
+
+          ls -lh release-assets
+          gh release upload "$TAG" release-assets/* --clobber
