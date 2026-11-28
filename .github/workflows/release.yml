@@ -6,7 +6,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
 
 jobs:
   # Build first so a broken build never produces a release.
@@ -115,7 +114,7 @@ jobs:
           butlerApiKey: ${{ secrets.ITCH_IO_API_KEY }}
           gameData: artifacts/${{ matrix.gameData }}
           itchUsername: tacticallaptopbag
-          itchGameId: queens-test
+          itchGameId: queens
           buildChannel: ${{ matrix.channel }}
           buildNumber: ${{ steps.version.outputs.version }}
 
