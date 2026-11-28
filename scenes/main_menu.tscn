@@ -64,19 +64,12 @@ layout_mode = 2
 [node name="Grid Options" parent="CenterContainer/Title Screen" unique_id=1359782417 instance=ExtResource("7_oa1go")]
 layout_mode = 2
 
+[node name="Version" type="Label" parent="CenterContainer/Title Screen" unique_id=2097649365]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "v0.0.0"
+horizontal_alignment = 1
+script = ExtResource("11_lgwnu")
+
 [node name="Theme Switch" parent="." unique_id=1268724542 instance=ExtResource("8_tbmy8")]
 layout_mode = 1
-
-[node name="Version" type="Label" parent="." unique_id=2097649365]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -40.0
-offset_top = -36.0
-grow_horizontal = 0
-grow_vertical = 0
-text = "v0.0.0"
-script = ExtResource("11_lgwnu")
